@@ -27,4 +27,4 @@ pip install -r requirements.txt
 
 ## Running the program
 
-The server can be started by running the command `uicorn main:app --port 80` from the root directory of the repo with the virtual environment active.
+The server can be started by running the command `uvicorn main:app --port 80` from the root directory of the repo with the virtual environment active.
