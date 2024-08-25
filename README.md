@@ -1,7 +1,4 @@
-
-<!-- ![Platform Logo](https://github.com/Anthony6444/ArenaControl/blob/main/) -->
-
-![Platform Logo](/banner_transparent.png)
+![ArenaCommand Logo](/banner_transparent.png)
 
 **ArenaCommand** is a battlebot stream control software built for [RSL](https://robotsmashingleague.com). It provides a local webserver, which can be accessed by OBS to show text and image elements on screen for videos and streams.
 With challonge integration for keeping track of records, probably, at some point, eventually.
