@@ -1,0 +1,483 @@
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.openapi.utils import get_openapi
+from fastapi import FastAPI, Request
+import random
+import requests
+import challonge
+import io
+import base64
+from PIL import Image
+from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, Response, FileResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from helpers import *
+from sensitivedata import *
+
+ch_cache_last_updated = datetime.datetime(1970, 1, 1)
+ch_cache_data = {}
+
+robots, id_lookup, name_lookup, = load_persisted()
+
+robot_red: dict[Field, str] = EMPTY_ROBOT
+robot_blue: dict[Field, str] = EMPTY_ROBOT
+next_robot_red: dict[Field, str] = EMPTY_ROBOT
+next_robot_blue: dict[Field, str] = EMPTY_ROBOT
+
+app = FastAPI(redoc_url=None)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+app.title = "ArenaCommand"
+app.version = "1.1.0"
+app.summary = "BattleBots Control software"
+
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        summary=app.summary,
+        description=app.description,
+        routes=app.routes,
+    )
+    openapi_schema["info"]["x-logo"] = {
+        "url": "/banner_inverse.png"
+    }
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
+
+
+def challonge_cache(data_type: ChDataType | None = None):
+    global ch_cache_last_updated, ch_cache_data
+    # if challonge hasn't been updated in the past 30sec, update cached data
+    if datetime.datetime.now() - ch_cache_last_updated > datetime.timedelta(0, 30):
+        tournaments = challonge.tournaments.index()
+        matches = challonge.matches.index(active_tournament["id"])
+        participants = challonge.participants.index(active_tournament["id"])
+        ch_cache_data[ChDataType.tournaments] = tournaments
+        ch_cache_data[ChDataType.matches] = matches
+        ch_cache_data[ChDataType.participants] = participants
+        print("Challonge cache updated! Last update",
+              datetime.datetime.now() - ch_cache_last_updated, "ago.")
+        ch_cache_last_updated = datetime.datetime.now()
+    else:  # use cached data
+        tournaments = ch_cache_data[ChDataType.tournaments]
+        matches = ch_cache_data[ChDataType.matches]
+        participants = ch_cache_data[ChDataType.participants]
+
+    # return data based on selector
+    if data_type == ChDataType.tournaments:
+        return tournaments
+    if data_type == ChDataType.matches:
+        return matches
+    if data_type == ChDataType.participants:
+        return participants
+
+
+# credentials loaded from sensitivedata.py
+challonge.set_credentials(CHALLONGE_USERNAME, CHALLONGE_API_KEY)
+tournaments = challonge.tournaments.index()  # list tournaments to begin
+# start with the first tournament in account as the selected tournament
+active_tournament = tournaments[0]
+
+
+def get_robot_record_id(id: str):
+    """returns a w-l-t record loaded from challonge based on the name of the \
+        robot and the currently selected tournament"""
+    c_parts = challonge_cache(ChDataType.participants)
+    c_matcs = challonge_cache(ChDataType.matches)
+
+    participants = {  # pare down challonge data and add w/l/t slots for keeping track
+        p["id"]: {
+            "id": p["id"],
+            "name": p["name"],
+            "wins": 0,
+            "losses": 0,
+            "ties": 0
+        } for p in c_parts}
+    matches = [
+        {
+            "id": m["id"],
+            "player1_id": m["player1_id"],
+            "player2_id": m["player2_id"],
+            "winner_id": m["winner_id"],
+            "loser_id": m["loser_id"],
+            "state": m["state"],
+        } for m in c_matcs
+    ]
+
+    # print(participants, matches)
+
+    for m in matches:
+        if m['state'] != "complete":  # make sure match completed
+            continue
+        if m["winner_id"] != None and m["loser_id"] != None:
+            participants[m["winner_id"]]["wins"] += 1
+            participants[m["loser_id"]]["losses"] += 1
+        else:
+            participants[m["player1_id"]]["ties"] += 1
+            participants[m["player2_id"]]["ties"] += 1
+
+    if id in id_lookup.keys():
+        current_name = robots[id_lookup[id]][Field.name]
+    else:
+        return ""  # will return if id does not resolve to a robot, such as for a grudge match
+
+    text = ""  # will return if robot name does not exist in selected challonge tournament
+    for id in participants.keys():
+        p = participants[id]
+        # print(p)
+        if current_name == p["name"]:
+            text = "-".join([str(p["wins"]), str(p["losses"]), str(p["ties"])])
+    return text
+
+
+def robot_exists_in_cur_ch_tournament(id: str) -> bool:
+    """returns boolean value of whether the current internal id exists in the challonge tournament"""
+    c_parts = challonge_cache(ChDataType.participants)
+    # pare down challonge data to just names
+    p_names = [p["name"] for p in c_parts]
+    if id in id_lookup.keys():
+        current_name = robots[id_lookup[id]][Field.name]
+        for name in p_names:
+            if current_name == name:
+                return True
+    return False
+
+
+@app.exception_handler(RequestValidationError)
+async def override_config_page_errors_to_404_page(request: Request, exc):
+    """override config page `not found` errors to redirect to 404.html, otherwise re raise exception"""
+    if "/config" in str(request.url):
+        with open("./static/404.html", "r") as f:
+            content = f.read().replace("{header}", getheader(WebPage.home))
+            return HTMLResponse(content=content, status_code=404)
+    else:
+        raise exc
+
+
+@app.get("/", responses={307: {"content": {"text/html": {}}}}, response_class=RedirectResponse)
+def index() -> RedirectResponse:
+    """Redirects to `config/home`"""
+    return RedirectResponse("/config/home", status_code=307)
+
+
+@app.get("/config/{webpage}", responses={200: {"content": {"text/html": {}}}}, response_class=HTMLResponse)
+def html_page(webpage: WebPage) -> HTMLResponse:
+    """Return HTML for one of the available configuration pages. default is home."""
+    with open(f"./static/{webpage.name}.html", "r") as f:
+        content = f.read()
+        if webpage == WebPage.home:
+            content = content.replace("{markdown}", readme_to_html())
+        return HTMLResponse(content=content.replace("{header}", getheader(webpage)).replace("{appname}", app.title))
+
+
+@app.get("/api/v1/active/{queue_pos}/{color}/image")
+def get_robot_image_json(color: Color, queue_pos: QueuePosition, transform: ImageTransform | None = None, max_size: int | None = None) -> JSONResponse:
+    """returns the stored image for selected robot"""
+    if queue_pos == QueuePosition.current:
+        temp_red, temp_blue = robot_red, robot_blue
+    elif queue_pos == QueuePosition.next:
+        temp_red, temp_blue = next_robot_red, next_robot_blue
+    if color == Color.red:
+        id = temp_red[Field.id]
+    elif color == Color.blue:
+        id = temp_blue[Field.id]
+    return {"field": "imageurl", "text": f"http://localhost/api/v1/images/get/{id}?max_size=446&transform=pad"}
+
+
+@app.get("/api/v1/active/{queue_pos}/{color}/record")
+def get_robot_record_json(queue_pos: QueuePosition, color: Color):
+    """ returns the record (W-L-T) of the selected robot"""
+    if queue_pos == QueuePosition.current:
+        temp_red, temp_blue = robot_red, robot_blue
+    elif queue_pos == QueuePosition.next:
+        temp_red, temp_blue = next_robot_red, next_robot_blue
+    if color == Color.red:
+        id = temp_red[Field.id]
+    elif color == Color.blue:
+        id = temp_blue[Field.id]
+    # print("name")
+
+    text = get_robot_record_id(id)
+
+    return {"field": Field.record, "text": text, "format": "W-L-T"}
+
+
+@app.get("/api/v1/active/{queue_pos}/{color}/{field}")
+def get_robot_field_json(color: Color, field: Field, queue_pos: QueuePosition) -> JSONResponse:
+    """get other field of the current robot"""
+    if queue_pos == QueuePosition.current:
+        temp_red, temp_blue = robot_red, robot_blue
+    elif queue_pos == QueuePosition.next:
+        temp_red, temp_blue = next_robot_red, next_robot_blue
+    if color == Color.red:
+        return {"field": field, "text": temp_red[field]}
+    elif color == Color.blue:
+        return {"field": field, "text": temp_blue[field]}
+
+
+@app.get("/api/v1/list/{weightclass}")
+async def get_robot_list(weightclass: Weightclass):
+    """get list of robots selected by weightclass"""
+    global robots
+    if weightclass != Weightclass.all:
+        returnable = [
+            robot for robot in robots if robot[Field.weightclass] == weightclass]
+    else:
+        returnable = robots
+    for robot in returnable:
+        robot[Field.record] = get_robot_record_id(robot[Field.id])
+        robot[Field.existsinchallonge] = robot_exists_in_cur_ch_tournament(
+            robot[Field.id])
+    return returnable
+
+
+@app.post("/api/v1/advance")
+def advance_standby_robot():
+    """advance standby robots, both red and blue, to active slot"""
+    global robot_blue, robot_red, next_robot_blue, next_robot_red
+    robot_blue = next_robot_blue
+    robot_red = next_robot_red
+    next_robot_blue = EMPTY_ROBOT
+    next_robot_red = EMPTY_ROBOT
+
+
+@app.post("/api/v1/set/{queue_pos}/{color}")
+def set_robot_by_name(queue_pos: QueuePosition, color: Color, robot_name: RobotName):
+    """set active or next robot by it's name"""
+    global robot_blue, robot_red, next_robot_blue, next_robot_red
+    new_robot = robots[name_lookup[robot_name.robot_name.strip()]]
+    if queue_pos == QueuePosition.current:
+        if color == Color.blue:
+            robot_blue = new_robot
+        if color == Color.red:
+            robot_red = new_robot
+    elif queue_pos == QueuePosition.next:
+        if color == Color.blue:
+            next_robot_blue = new_robot
+        if color == Color.red:
+            next_robot_red = new_robot
+
+
+@app.post("/api/v1/special/{type}/{weightclass}")
+def start_special_match(type: SpecialMatchType, weightclass: Weightclass):
+    """activate special match type"""
+    global robot_blue, robot_red
+    if type == SpecialMatchType.grudge:
+        robot_red = grudge_match(weightclass)
+        robot_blue = grudge_match(weightclass)
+    elif type == SpecialMatchType.rumble:
+        robot_red = rumble(weightclass)
+        robot_blue = rumble(weightclass)
+
+
+@app.get("/api/v1/images/get/{id}", responses={200: {"content": {"image/png": {}}}}, response_class=Response)
+def get_image_by_id(id: str, transform: ImageTransform | None = None, max_size: int | None = None):
+    # crop = True if crop is not None else False
+    if id in id_lookup.keys():
+        image_status = robots[id_lookup[id]]["imagestatus"]
+    else:
+        image_status = ImageStatus.error
+
+    if image_status == ImageStatus.error:
+        return return_image_from_id(id, transform=transform, max_size=max_size)
+    elif image_status == ImageStatus.warn:
+        return return_image_from_id(id, transform=transform, max_size=max_size)
+    elif image_status == ImageStatus.ok:
+        return return_image_from_id(id, transform=transform, max_size=max_size)
+
+
+@app.post("/api/v1/images/save/{id}")
+async def handle_image_save(id, request: Request):
+    form_data = await request.form()
+    if form_data["imgBase64"].find("image/png") > 0:
+        data = form_data["imgBase64"].replace("data:image/png;base64,", "")
+        # print(data[0:100], "...", data[-100:-1])
+        image_data = base64.b64decode(data)
+        image = Image.open(io.BytesIO(image_data))
+        image.save(f"./images/{id}.png")
+        robots[id_lookup[id]][Field.imagestatus] = ImageStatus.ok
+    else:
+        raise TypeError(
+            f"File type{form_data["imgBase64"].split[";"][0].split(":")[-1]} not supported")
+
+
+@app.post("/api/v1/robots/edit/{id}")
+async def edit_robot(id: str, request: Request):
+    global robots
+    json = await request.json()
+    if id in id_lookup.keys():
+        # print(robots[id_lookup[id]])
+        robots[id_lookup[id]][Field.name] = json["name"]
+        robots[id_lookup[id]][Field.teamname] = json["teamname"]
+        robots[id_lookup[id]][Field.weightclass] = json["weightclass"]
+        robots[id_lookup[id]][Field.flavortext] = json["flavortext"]
+        # print(robots[id_lookup[id]])
+    persist(robots, id_lookup, name_lookup)
+
+
+@app.delete("/api/v1/robots/delete/{id}")
+def delete_robot(id: str):
+    if id in id_lookup.keys():
+        robots[id_lookup[id]] = DELETED_ROBOT
+    persist(robots, id_lookup, name_lookup)
+
+
+@app.post("/api/v1/robots/list/{mode}")
+async def replace_robot_list(mode: RobotListMode, request: Request):
+    global robots, id_lookup, name_lookup
+    if mode == RobotListMode.replace:
+        robots = []
+    # TODO: implement append mode, handle robots with same name
+    assert mode == RobotListMode.replace
+    data = await request.json()
+    if data["has_headers"]:
+        data["content"].pop(0)  # remove headers from robot list
+    for robot in data["content"]:
+        name: str = robot[data["key"]["robot_name"]].strip()
+        id: str = name_to_id(name)
+        flavortext: str = robot[data["key"]["flavortext"]].strip()
+        if flavortext.startswith("\"") or flavortext.startswith("\'"):
+            flavortext = flavortext[1:]
+        if flavortext.endswith("\"") or flavortext.endswith("\'"):
+            flavortext = flavortext[:-1]
+        robots.append({
+            Field.id: id,
+            Field.name: name,
+            Field.teamname: robot[data["key"]["team_name"]].strip(),
+            Field.weightclass: Weightclass[robot[data["key"]["weightclass"]].strip().lower()],
+            Field.flavortext: flavortext,
+            Field.imagestatus: ImageStatus.ok if image_exists(id) else ImageStatus.error,
+        })
+        id_lookup.update({id: len(robots)-1})
+        name_lookup.update({name: len(robots)-1})
+    # print(robots)
+    persist(robots, id_lookup, name_lookup)
+
+
+@app.delete("/api/v1/robots/list/clear")
+async def clear_robot_list():
+    global robots, id_lookup, name_lookup
+    persist([], {}, {})
+    robots, id_lookup, name_lookup = load_persisted()
+
+
+@app.get("/api/v1/tournaments/list")
+async def get_tournaments():
+    tournaments = challonge_cache(ChDataType.tournaments)
+    # return [{"name": tournament["name"], "id": tournament["id"]} for tournament in tournaments]
+    return tournaments
+
+
+@app.post("/api/v1/tournaments/active")
+async def set_active_tournament(request: Request):
+    global active_tournament, ch_cache_last_updated
+    # force cache update because new tournament
+    json = await request.json()
+    tournaments = challonge_cache(ChDataType.tournaments)
+    for t in tournaments:
+        if int(json["id"]) == int(t['id']):
+            active_tournament = t
+    ch_cache_last_updated = datetime.datetime(1970, 1, 1)
+
+
+@app.get("/api/v1/tournaments/active")
+def get_active_tournament():
+    return active_tournament
+
+
+@app.get("/api/v1/tournaments/active/participants")
+def get_active_tournament_pariticipants():
+    global active_tournament
+    participants = challonge_cache(ChDataType.participants)
+    return participants
+
+
+@app.get("/api/v1/tournaments/active/matches")
+def get_active_tournament_matches():
+    global active_tournament
+    matches = challonge_cache(ChDataType.matches)
+    return matches
+
+
+app.mount("/", StaticFiles(directory="icons"), name="icons")
+
+
+def return_image_from_id(image_name, transform: ImageTransform | None, max_size: int | None = None) -> Response:
+    if (image_name in id_lookup.keys()) or image_name == "rsl-logo":
+        # image_name = robots[id_lookup[image_id]]["name"]
+        try:
+            with open(f"./images/{image_name}.png", "rb") as f:
+                image_pil = Image.open(f, "r")
+                if transform == ImageTransform.crop:
+                    crop_size = min(image_pil.width, image_pil.height)
+                    left = int(image_pil.size[0] / 2 - crop_size / 2)
+                    upper = int(image_pil.size[1] / 2 - crop_size / 2)
+                    right = left + crop_size
+                    lower = upper + crop_size
+
+                    new_image = image_pil.crop(
+                        (left, upper, right, lower))
+                elif transform == ImageTransform.pad:
+                    if image_pil.height < image_pil.width:
+                        new_image = Image.new(
+                            image_pil.mode,
+                            (image_pil.width, image_pil.width),
+                            (255, 255, 255),
+                        )
+                        new_image.paste(
+                            image_pil,
+                            (0, int((image_pil.width - image_pil.height) / 2)),
+                        )
+                    else:
+                        new_image = Image.new(
+                            image_pil.mode,
+                            (image_pil.height, image_pil.height),
+                            (255, 255, 255),
+                        )
+                        new_image.paste(
+                            image_pil,
+                            (int((image_pil.height - image_pil.width) / 2), 0),
+                        )
+                else:
+                    new_image = image_pil
+                if max_size:
+                    # print(max_size)
+                    if new_image.width > max_size:
+                        factor = max_size / new_image.width
+                        # print(factor)
+                        new_image = new_image.resize(
+                            (int(new_image.width * factor), int(new_image.height * factor)))
+                        # print(new_image.width, new_image.height)
+                return_image = io.BytesIO()
+                new_image.save(return_image, "png")
+                return Response(
+                    content=return_image.getvalue(),
+                    media_type="image/png",
+                    headers=NOCACHE_HEADERS,
+                )
+        except FileNotFoundError:
+            print("File not found")
+    # return FileResponse("./images/no-image.png", headers=NOCACHE_HEADERS)
+    with open(f"./images/no-image.png", "rb") as f:
+        new_image = Image.open(f, "r")
+        if max_size:
+            # print(max_size)
+            if new_image.width > max_size:
+                factor = max_size / new_image.width
+                # print(factor)
+                new_image = new_image.resize(
+                    (int(new_image.width * factor), int(new_image.height * factor)))
+                # print(new_image.width, new_image.height)
+        return_image = io.BytesIO()
+        new_image.save(return_image, "png")
+        return Response(
+            content=return_image.getvalue(),
+            media_type="image/png",
+            headers=NOCACHE_HEADERS,
+        )

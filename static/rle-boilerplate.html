@@ -1,0 +1,53 @@
+<tr id="rle-{i}">
+    <td id="rle-{i}-robot-name" class="rle-robot-name">
+        <p>{robot_name}</p>
+    </td>
+    <td id="rle-{i}-team-name" class="rle-teamn-name">
+        <p>{team_name}</p>
+    </td>
+    <td id="rle-{i}-weightclass" class="rle-weightclass">
+        <p>{weightclass}</p>
+    </td>
+    <td id="rle-{i}-record" class="rle-record">
+        <p>{record}</p>
+    </td>
+    <td id="rle-{i}-flavortext" class="rle-flavortext text-truncate" style="max-width: 350px;">
+        <p>{flavortext}</p>
+    </td>
+    <td id="rle-{i}-ch-status">
+        <p id="rle-ch-ok" class="ok-green cursor-default hidden" data-bs-toggle="tooltip"
+            data-bs-title="Robot exists in selected Challonge tournament">
+            <i class="fa fa-lg fa-shield" aria-hidden="true"></i>
+            <i class="fa fa-lg fa-check-circle" aria-hidden="true"></i>
+        </p>
+        <p id="rle-ch-error" class="warn-red cursor-default hidden" data-bs-toggle="tooltip"
+            data-bs-title="Robot is missing from current Challonge tournament">
+            <i class="fa fa-lg fa-shield" aria-hidden="true"></i>
+            <i class="fa fa-lg fa-times-circle" aria-hidden="true"></i>
+        </p>
+    </td>
+    <td id="rle-{i}-image" class="rle-image text-center">
+        <p id="rle-image-ok" class="ok-green cursor-default image-status hidden" data-bs-toggle="tooltip"
+            data-bs-title="Image exists and has been verified">
+            <i class="fa fa-lg fa-file-image-o" aria-hidden="true"></i>
+            <i class="fa fa-lg fa-check-circle" aria-hidden="true"></i>
+        </p>
+        <p id="rle-image-warn" class="warn-yellow cursor-default image-status hidden" data-bs-toggle="tooltip"
+            data-bs-title="Image has not been marked as verified">
+            <i class="fa fa-lg fa-file-image-o" aria-hidden="true"></i>
+            <i class="fa fa-lg fa-exclamation-circle" aria-hidden="true"></i>
+        </p>
+        <p id="rle-image-error" class="warn-red cursor-default image-status hidden" data-bs-toggle="tooltip"
+            data-bs-title="Image does not exist">
+            <i class="fa fa-lg fa-file-image-o" aria-hidden="true"></i>
+            <i class="fa fa-lg fa-times-circle" aria-hidden="true"></i>
+        </p>
+    </td>
+    <td id="rle-{i}-edit-button-container" class="rle-edit-button-container">
+        <span class="hidden" id="rle-{i}-id">{id}</span>
+        <button id="rle-{i}-edit-button" class="btn btn-primary edit-button float-right invisible"
+            data-bs-toggle="modal" data-bs-target="#edit-robot-modal">
+            <i class="fa fa-edit fa-lg text-center" aria-hidden="true"></i>
+        </button>
+    </td>
+</tr>

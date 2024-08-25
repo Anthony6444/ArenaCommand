@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html data-bs-theme="dark" class="h-100">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Stream Control | {appname}</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Kanit&family=Quicksand&display=swap" rel="stylesheet">
+        <link rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/css/style.css">
+
+    </head>
+
+    <body class="h-100">
+        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">{header}</header>
+        <div class="overlay" id="bot-selector">
+            <div class="overlay-content">
+                <button type="button" class="btn-close" aria-label="Close" onclick="closeOverlay()"></button>
+                <div class="container" id="ant-list">
+                    <h4 class="header-inverse">Antweights</h4>
+                </div>
+                <div class="container" id="beetle-list">
+                    <h4 class="header-inverse">Beetleweights</h4>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-1"></div>
+                <div class="col-4"></div>
+                <div class="col-2"></div>
+                <div class="col-4"></div>
+                <div class="col-1"></div>
+
+            </div>
+            <div class="row fightcard-row">
+
+                <div class="col-1">
+                </div>
+                <div class="col-4">
+                    <div class="fightcard blue" id="current-blue">
+                        <h3 id="blue-name"></h3>
+                        <h5 id="blue-teamname"></h5>
+                        <hr>
+                        <p id="blue-flavortext"></p>
+                        <img id="blue-image" width="100%">
+                        <p id="blue-winrecord"></p>
+                        <p class="hidden" id="blue-weightclass"></p>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="row">
+                        <h4 id="weightclass-top" class="text-center"></h4>
+                        <p>&nbsp;</p>
+                        <h1 class="text-center">VS</h1>
+                    </div>
+                    <div id="weight-mismatch-main" class="row d-flex justify-content-center text-center hidden">
+                        <div id="weight-conflict">
+                            <i class="fa fa-exclamation-triangle warn-red" aria-hidden="true"></i>
+                        </div>
+                        <p>&nbsp;</p>
+                        <p class="warn-red">WEIGHT MISMATCH</p>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="fightcard red" id="current-red">
+                        <h3 id="red-name"></h3>
+                        <h5 id="red-teamname"></h5>
+                        <hr>
+                        <p id="red-flavortext"></p>
+                        <img id="red-image" width="100%">
+                        <p id="red-winrecord"></p>
+                        <p class="hidden" id="red-weightclass"></p>
+                    </div>
+                </div>
+                <div class="col-1">
+                </div>
+            </div>
+            <div class="row text-center mb-3 mt-3">
+                <div class="col"><button class="btn btn-primary" id="shiftbutton"><i class="fa fa-lg fa-arrow-up"
+                            aria-hidden="true"></i></button></div>
+            </div>
+            <div class="row">
+                <div class="col-1">
+                </div>
+                <div class="col-4">
+                    <div class="fightcard blue" id="next-blue">
+                        <h4 id="next-blue-name"></h4>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div class="not-fightcard"><h4 class="text-center invisible">vs</h4></div>
+                </div>
+                <div class="col-4">
+                    <div class="fightcard red" id="next-red">
+                        <h4 class="col" id="next-red-name"></h4>
+                    </div>
+                </div>
+                <div class="col-1">
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="container mt-auto">
+            <div class="row d-flex py-3 mb-2 flex-wrap justify-content-end">
+                <h3 class="d-inline-flex w-auto mb-3 mb-md-0 me-md-auto">Special matches</h3>
+                <select class="form-select d-flex w-auto me-md-3" id="special-match-weightclass">
+                    <option value="antweight">Antweight</option>
+                    <option value="beetleweight">Beetleweight</option>
+                </select>
+                <button class="btn btn-light d-flex w-auto me-md-3" id="grudge-button">Grudge match</button>
+                <button class="btn btn-light d-flex w-auto me-md-3" id="rumble-button">Rumble match</button>
+            </div>
+        </div>
+        <div class="container">
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <div class="col-md-4 d-flex align-items-center">
+                    <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+                        <svg class="bi" width="30" height="24">
+                            <use xlink:href="#bootstrap"></use>
+                        </svg>
+                    </a>
+                    <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2024 Robot Smashing League, LLC</span>
+                </div>
+
+                <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+                    <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24">
+                                <use xlink:href="#twitter"></use>
+                            </svg></a></li>
+                    <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24">
+                                <use xlink:href="#instagram"></use>
+                            </svg></a></li>
+                    <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24">
+                                <use xlink:href="#facebook"></use>
+                            </svg></a></li>
+                </ul>
+            </footer>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script>
+        var fields = [
+            "name",
+            "teamname",
+            "flavortext",
+            "weightclass"
+        ]
+        var buttonPushedId = null;
+        var fightcardSelectedId = null;
+        function getCurrentRobotDetails(color) {
+            for (i = 0; i < fields.length; i++) {
+                $.ajax({
+                    url: "/api/v1/active/current/" + color + "/" + fields[i],
+                    success: function (result) {
+                        $("#" + color + "-" + result["field"]).html(result["text"]);
+                    }
+                });
+            }
+        }
+        function getUpNextRobotDetails(color) {
+            for (i = 0; i < fields.length - 3; i++) {
+                $.ajax({
+                    url: "/api/v1/active/next/" + color + "/" + fields[i],
+                    success: function (result) {
+                        $("#next-" + color + "-" + result["field"]).html(result["text"]);
+                    }
+                });
+            }
+        }
+        function populateRobotList() {
+            $.get("/api/v1/list/all", success = function (result) {
+                for (j = 0; j < result.length; j++) {
+                    button = $("<span>", { "id": "card" + j, "class": "card selector-card m-2 clickable row" });
+                    // console.log(result[j]["weightclass"])
+                    if (result[j]["weightclass"] == "antweight") {
+                        button.html("<p class=\"no-padding\"><i class=\"fa fa-car\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
+                        $("#ant-list").append(button)
+                    } else if (result[j]["weightclass"] == "beetleweight") {
+                        button.html("<p class=\"no-padding\"><i class=\"fa fa-truck\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
+                        $("#beetle-list").append(button)
+                    }
+                    // console.log(button)
+                    // $("#beetle-list").append($("<button>", ))
+                    // button.text(result[j]["name"])
+
+                }
+            })
+        }
+        function waitForRobotSelectedUpdateFightcard() {
+            if (buttonPushedId != null) {
+                // console.log(buttonPushedId, ";", fightcardSelectedId, ";")
+                robot_name = $("#" + buttonPushedId).text();
+                if (fightcardSelectedId == "current-blue") {
+                    $.jpost("/api/v1/set/current/blue", data = { "robot_name": robot_name })
+                }
+                else if (fightcardSelectedId == "current-red") {
+                    $.jpost("/api/v1/set/current/red", data = { "robot_name": robot_name })
+                }
+                else if (fightcardSelectedId == "next-blue") {
+                    $.jpost("/api/v1/set/next/blue", data = { "robot_name": robot_name })
+                }
+                else if (fightcardSelectedId == "next-red") {
+                    $.jpost("/api/v1/set/next/red", data = { "robot_name": robot_name })
+                }
+                else {
+                    console.log("invalid fightcard selected")
+                }
+                buttonPushedId = null;
+                fightcardSelectedId = null;
+                updateRobotDetails();
+            } else {
+                setTimeout(waitForRobotSelectedUpdateFightcard, 250)
+            }
+        }
+        $(document).on("click", ".fightcard", function (event) {
+            id = event.target.id.toString();
+            if (event.target.tagName != "DIV") {
+                id = event.target.parentElement.id.toString();
+            }
+            // console.log(id);
+            fightcardSelectedId = id;
+            openOverlay();
+            waitForRobotSelectedUpdateFightcard();
+        });
+        $(document).on("click", ".clickable", function (event) {
+            id = event.target.id.toString();
+            if (event.target.tagName == "P") {
+                id = event.target.parentElement.id.toString();
+            }
+            else if (event.target.tagName == "I") {
+                id = event.target.parentElement.parentElement.id.toString();
+            }
+            // console.log(id);
+            buttonPushedId = id;
+            closeOverlay();
+        });
+        $(document).on("click", ".fightcard", function (event) {
+            openOverlay();
+        });
+        $("#shiftbutton").on("click", function () {
+            $.post("/api/v1/advance", success = function () {
+                updateRobotDetails();
+            })
+        })
+        $("#grudge-button").on("click", function(event) {
+            $.post("/api/v1/special/grudge/"+$("#special-match-weightclass").val());
+            updateRobotDetails();
+        });
+        $("#rumble-button").on("click", function(event) {
+            $.post("/api/v1/special/rumble/"+$("#special-match-weightclass").val());
+            updateRobotDetails();
+        });
+        function openOverlay() {
+            document.getElementById('bot-selector').classList.add('active');
+        }
+
+        function closeOverlay() {
+            document.getElementById('bot-selector').classList.remove('active');
+        }
+        function updateRobotDetails() {
+            getCurrentRobotDetails("blue");
+            getCurrentRobotDetails("red");
+            getUpNextRobotDetails("blue");
+            getUpNextRobotDetails("red");
+            if ($("#red-weightclass").text() != $("#blue-weightclass").text()) {
+                $("#weightclass-top").text("");
+                // $("#weight-mismatch-main").removeClass("hidden");
+            } else {
+                // $("#weightclass-top").text($("#red-weightclass").text());
+                $("#weight-mismatch-main").addClass("hidden");
+            }
+        }
+        updateRobotDetails();
+        populateRobotList();
+        $.extend({
+            jpost: function (url, body) {
+                return $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: JSON.stringify(body),
+                    contentType: "application/json",
+                    dataType: 'json'
+                });
+            }
+        });
+    </script>
+    </body>
+
+</html>

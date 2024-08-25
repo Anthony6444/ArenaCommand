@@ -1,0 +1,306 @@
+:root {
+    --scrollbar-width: calc(100vw - 100%)
+}
+
+body {
+    font-family: "Quicksand", "Kanit", sans-serif;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    background-color: var(--bs-body-bg);
+    padding-right: calc(2em - var(--scrollbar-width));
+}
+
+
+
+.fightcard {
+    padding: 1em;
+    border-radius: 0.5em;
+    color: white;
+    height: 100%;
+}
+
+.fightcard h4, .not-fightcard h4 {
+    margin-bottom: 0;
+}
+
+.not-fightcard {
+    padding: 1em;
+    border-radius: 0.5em;
+}
+
+.fightcard-row {
+    min-height: 25rem;
+}
+
+.float-right {
+    float: right;
+    padding-top: 0.4em;
+
+}
+
+.fightcard:hover {
+    transition: 0.2s ease-in-out;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.29);
+    cursor: pointer;
+}
+
+.robot-image-list-item:hover {
+    transition: 0.2s ease-in-out;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.29);
+    cursor: pointer;
+}
+
+#shiftbutton {
+    padding: 1em 2em;
+}
+
+#refresh-video-button {
+    /* display: flex;
+    align-self: center; */
+    margin-top: 42%;
+    margin-bottom: auto;
+}
+
+#clear-photo-button,
+#photo-button {
+    width: 100%;
+}
+
+.spinning i {
+    animation: fa-spin 4s infinite linear;
+}
+
+#video-stream {
+    max-width: 100%;
+    aspect-ratio: 1920/1440;
+}
+
+.max-width-100 {
+    max-width: 100%;
+}
+
+.header-inverse {
+    color: white;
+}
+
+.red {
+    background-color: #a21d23;
+}
+
+.blue {
+    background-color: #2c338e;
+}
+
+@keyframes grow {
+    from {
+        transform: scale(2);
+    }
+
+    to {
+        transform: scale(4);
+    }
+}
+
+#weightclass-top {
+    text-transform: uppercase;
+}
+
+.rle-weightclass p {
+    text-transform: lowercase;
+    display: inline-block;
+}
+
+.rle-weightclass p:first-letter {
+    text-transform: uppercase;
+}
+
+.selector-card {
+    padding: 0.5em;
+    text-wrap: stable;
+    cursor: pointer;
+    display: inline-grid;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+#weight-conflict {
+    animation-direction: alternate;
+    transition-duration: 1s;
+    animation-name: grow;
+    animation-duration: 2s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+}
+
+.no-padding,
+tr p {
+    margin-bottom: 0px;
+}
+
+tr p {
+    display: inline;
+}
+
+.cursor-default {
+    cursor: default;
+}
+
+.warn-red {
+    color: #bf213e;
+}
+
+.warn-yellow {
+    color: #e3af20;
+}
+
+.ok-green {
+    color: #1b7d05;
+}
+
+.image-status {
+    width: fit-content;
+}
+
+#weight-conflict i {
+    padding-left: 50%;
+    padding-right: 50%;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+}
+
+
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
+    z-index: 1051;
+    /* Above Bootstrap's modal overlay */
+    display: none;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+}
+
+.overlay.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Ensure .btn-close is visible on the dark background */
+.btn-close {
+    filter: invert(1);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* 
+.invisible {
+    visibility: hidden !important;
+} */
+
+.image-cards {
+    display: inline-flex;
+    flex-wrap: wrap;
+}
+
+.text-right {
+    text-align: right;
+}
+
+#action-button-container {
+    display: flex;
+    /* flex-wrap: nowrap; */
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-bottom: 2em;
+}
+
+#action-button-container button {
+    width: fit-content;
+    margin-left: 2em;
+
+}
+
+#ch-key-box {
+    width: 43.25%;
+}
+
+code {
+    white-space: pre;
+}
+
+/* #update-ch-key-button i { 
+    position: absolute;
+    transform: translateX(-35px) translateY(4px);
+}
+
+#update-ch-key-button i::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 8px;
+    background-color: hotpink;
+
+} */
+.md-styles h1,
+.md-styles h2 {
+    width: fit-content;
+    position: relative;
+    margin-bottom: .5em;
+}
+
+.md-styles h1::before,
+.md-styles h2::before {
+    content: "";
+    position: absolute;
+    background: var(--bs-body-color);
+    height: 4px;
+    width: min(30%, 1.5em);
+    transform: translateY(3px);
+    left: 0;
+    bottom: 0;
+    border-radius: 4px;
+    transition: .1s ease-in-out;
+}
+
+.md-styles h1:hover::before,
+.md-styles h2:hover::before {
+    width: 100%;
+    transition: .1s ease-in-out;
+}
+
+.md-styles img {
+    width: 50%;
+}
+
+p.error-404 {
+    margin-top: 15vh;
+    font-size: 200%;
+}
+
+h1.error-404 {
+    margin-top: 3vh;
+    font-size: 800%;
+}
