@@ -1,6 +1,7 @@
 import datetime
 from enum import Enum, auto
 import json
+import socket
 import os
 import markdown
 from pydantic import BaseModel
@@ -30,6 +31,20 @@ NOCACHE_HEADERS = {
     "Pragma": "no-cache",
     "Expires": "0",
 }
+
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(0)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.254.254.254', 1))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip
 
 
 def name_to_id(name: str) -> str:
@@ -125,8 +140,19 @@ class ChCacheAction(StrEnum):
     refresh = auto()
 
 
-def getheader(webpage: WebPage):
+def get_header(webpage: WebPage):
     with open("./static/header.html", "r") as f:
+        content = f.read()
+        for page in WebPage:
+            if page == webpage:
+                content = content.replace(f"{{{page.name}}}", "active")
+            else:
+                content = content.replace(f"{{{page.name}}}", "")
+        return content
+
+
+def get_footer(webpage: WebPage):
+    with open("./static/footer.html", "r") as f:
         content = f.read()
         for page in WebPage:
             if page == webpage:

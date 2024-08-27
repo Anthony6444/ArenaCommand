@@ -25,6 +25,7 @@ next_robot_blue: dict[Field, str] = EMPTY_ROBOT
 
 app = FastAPI(redoc_url=None)
 app.mount("/static", StaticFiles(directory="static"), name="static")
+print("Current IP address:", get_ip())
 
 app.title = "ArenaCommand"
 app.version = "1.1.0"
@@ -154,7 +155,7 @@ async def override_config_page_errors_to_404_page(request: Request, exc):
     """override config page `not found` errors to redirect to 404.html, otherwise re raise exception"""
     if "/config" in str(request.url):
         with open("./static/404.html", "r") as f:
-            content = f.read().replace("{header}", getheader(WebPage.home))
+            content = f.read().replace("{header}", get_header(WebPage.home))
             return HTMLResponse(content=content, status_code=404)
     else:
         raise exc
@@ -173,7 +174,7 @@ def html_page(webpage: WebPage) -> HTMLResponse:
         content = f.read()
         if webpage == WebPage.home:
             content = content.replace("{markdown}", readme_to_html())
-        return HTMLResponse(content=content.replace("{header}", getheader(webpage)).replace("{appname}", app.title))
+        return HTMLResponse(content=content.replace("{header}", get_header(webpage)).replace("{appname}", app.title).replace("{footer}", get_footer(webpage)))
 
 
 @app.get("/api/v1/active/{queue_pos}/{color}/image")
@@ -302,6 +303,7 @@ async def handle_image_save(id, request: Request):
         image = Image.open(io.BytesIO(image_data))
         image.save(f"./images/{id}.png")
         robots[id_lookup[id]][Field.imagestatus] = ImageStatus.ok
+        persist(robots, id_lookup, name_lookup)
     else:
         raise TypeError(
             f"File type{form_data["imgBase64"].split[";"][0].split(":")[-1]} not supported")

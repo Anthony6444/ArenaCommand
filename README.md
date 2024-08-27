@@ -6,7 +6,7 @@ With challonge integration for keeping track of records, probably, at some point
 ## Features
 
 - Local Webserver
-- Challonge Integration **Coming Soon!*
+- Challonge Integration **In progress!*
 
 ## Installation
 
@@ -27,4 +27,4 @@ pip install -r requirements.txt
 
 ## Running the program
 
-The server can be started by running the command `uvicorn main:app --port 80` from the root directory of the repo with the virtual environment active.
+The server can be started by running the command `uvicorn main:app --port 80 --host "0.0.0.0"` from the root directory of the repo with the virtual environment active.

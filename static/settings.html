@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html data-bs-theme="dark">
+<html data-bs-theme="dark" class="h-100">
 
     <head>
         <meta charset="utf-8">
@@ -16,9 +16,9 @@
 
     </head>
 
-    <body>
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">{header}</header>
-        <div class="container">
+    <body class="d-flex flex-column h-100">
+        {header}
+        <div class="container flex-shrink-0">
             <h2 class="border-bottom mb-4 pb-2">Challonge settings</h2>
             <div class="row d-flex justify-content-end align-items-baseline m-2">
                 <h5 class="w-auto py-2 mb-0 pb-0 mt-auto me-md-auto">Challonge API key</h5>
@@ -32,33 +32,13 @@
             </div>
             </div>
         </div>
-        <div class="container">
-            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-                <div class="col-md-4 d-flex align-items-center">
-                    <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
-                        <i class="fa fa-lg fa-home"></i>
-                    </a>
-                    <span class="mb-3 mb-md-0 text-body-secondary">&copy; 2024 Robot Smashing League, LLC</span>
-                </div>
-
-                <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-                    <li class="ms-3"><a class="text-body-secondary" href="#"><i
-                                class="fa fa-lg fa-youtube-play"></i></a></li>
-                    <li class="ms-3"><a class="text-body-secondary" href="#"><i
-                                class="fa fa-lg fa-instagram"></i></a></li>
-                    <li class="ms-3"><a class="text-body-secondary" href="#"><i
-                                class="fa fa-lg fa-facebook"></i></a></li>
-                </ul>
-            </footer>
-        </div>
+        {footer}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <script src="/static/js/settings.js">
-            
-        </script>
+        <script src="/static/js/settings.js"></script>
     </body>
 
 </html>
