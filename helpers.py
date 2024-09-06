@@ -10,17 +10,37 @@ from os.path import exists as file_exists
 
 TAGS_META = [
     {
-        "name": "users",
-        "description": "Operations with users. The **login** logic is also here.",
+        "name": "configpages",
+        "description": "This section is comprised of interface and config pages and should be acesssed through a web browser.",
     },
     {
-        "name": "items",
-        "description": "Manage items. So _fancy_ they have their own docs.",
-        "externalDocs": {
-            "description": "Items external docs",
-            "url": "https://fastapi.tiangolo.com/",
-        },
+        "name": "activerobot",
+        "description": "Endpoints to get and manage the current and next up robots. These return json data.",
+
     },
+    {
+        "name": "robotlist",
+        "description": "Endpoints that deal with lists of robots.",
+
+    },
+    {
+        "name": "robot",
+        "description": "Endpoints that deal with a single robot, addressed by id or name",
+
+    },
+    {
+        "name": "tournaments",
+        "description": "Operactions that deal with challonge data and tournaments.",
+
+    },
+    {
+        "name": "images",
+        "description": "Endpoints that deal with robot images."
+    },
+    {
+        "name": "utilities",
+        "description": "General utilites that make the program run."
+    }
 ]
 
 
