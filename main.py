@@ -1,15 +1,18 @@
-from fastapi.exceptions import RequestValidationError
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from fastapi.openapi.utils import get_openapi
-from fastapi import FastAPI, Request
 import random
+import uvicorn
+import sys
 import requests
 import challonge
 import io
 import base64
-from PIL import Image
+
+from fastapi.exceptions import RequestValidationError
+from fastapi.openapi.utils import get_openapi
 from fastapi.responses import HTMLResponse, JSONResponse, PlainTextResponse, Response, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request
+from PIL import Image
+
 from helpers import *
 from sensitivedata import *
 
@@ -23,7 +26,8 @@ robot_blue: dict[Field, str] = EMPTY_ROBOT
 next_robot_red: dict[Field, str] = EMPTY_ROBOT
 next_robot_blue: dict[Field, str] = EMPTY_ROBOT
 
-app = FastAPI(redoc_url=None)
+app = FastAPI(redoc_url="/redoc", openapi_tags=TAGS_META,
+              swagger_ui_parameters={"deepLinking": False})
 app.mount("/static", StaticFiles(directory="static"), name="static")
 print("Current IP address:", get_ip())
 
@@ -41,6 +45,7 @@ def custom_openapi():
         summary=app.summary,
         description=app.description,
         routes=app.routes,
+        tags=app.openapi_tags
     )
     openapi_schema["info"]["x-logo"] = {
         "url": "/banner_inverse.png"
@@ -161,13 +166,13 @@ async def override_config_page_errors_to_404_page(request: Request, exc):
         raise exc
 
 
-@app.get("/", responses={307: {"content": {"text/html": {}}}}, response_class=RedirectResponse)
+@app.get("/", tags=["configpages"], responses={307: {"content": {"text/html": {}}}}, response_class=RedirectResponse)
 def index() -> RedirectResponse:
     """Redirects to `config/home`"""
     return RedirectResponse("/config/home", status_code=307)
 
 
-@app.get("/config/{webpage}", responses={200: {"content": {"text/html": {}}}}, response_class=HTMLResponse)
+@app.get("/config/{webpage}", tags=["configpages"], responses={200: {"content": {"text/html": {}}}}, response_class=HTMLResponse)
 def html_page(webpage: WebPage) -> HTMLResponse:
     """Return HTML for one of the available configuration pages. default is home."""
     with open(f"./static/{webpage.name}.html", "r") as f:
@@ -177,7 +182,7 @@ def html_page(webpage: WebPage) -> HTMLResponse:
         return HTMLResponse(content=content.replace("{header}", get_header(webpage)).replace("{appname}", app.title).replace("{footer}", get_footer(webpage)))
 
 
-@app.get("/api/v1/active/{queue_pos}/{color}/image")
+@app.get("/api/v1/active/{queue_pos}/{color}/image", tags=["activerobot"])
 def get_robot_image_json(color: Color, queue_pos: QueuePosition, transform: ImageTransform | None = None, max_size: int | None = None) -> JSONResponse:
     """returns the stored image for selected robot"""
     if queue_pos == QueuePosition.current:
@@ -191,7 +196,7 @@ def get_robot_image_json(color: Color, queue_pos: QueuePosition, transform: Imag
     return {"field": "imageurl", "text": f"http://localhost/api/v1/images/get/{id}?max_size=446&transform=pad"}
 
 
-@app.get("/api/v1/active/{queue_pos}/{color}/record")
+@app.get("/api/v1/active/{queue_pos}/{color}/record", tags=["activerobot"])
 def get_robot_record_json(queue_pos: QueuePosition, color: Color):
     """ returns the record (W-L-T) of the selected robot"""
     if queue_pos == QueuePosition.current:
@@ -209,7 +214,7 @@ def get_robot_record_json(queue_pos: QueuePosition, color: Color):
     return {"field": Field.record, "text": text, "format": "W-L-T"}
 
 
-@app.get("/api/v1/active/{queue_pos}/{color}/{field}")
+@app.get("/api/v1/active/{queue_pos}/{color}/{field}", tags=["activerobot"])
 def get_robot_field_json(color: Color, field: Field, queue_pos: QueuePosition) -> JSONResponse:
     """get other field of the current robot"""
     if queue_pos == QueuePosition.current:
@@ -222,7 +227,7 @@ def get_robot_field_json(color: Color, field: Field, queue_pos: QueuePosition) -
         return {"field": field, "text": temp_blue[field]}
 
 
-@app.get("/api/v1/list/{weightclass}")
+@app.get("/api/v1/list/{weightclass}", tags=["robotlist"])
 async def get_robot_list(weightclass: Weightclass):
     """get list of robots selected by weightclass"""
     global robots
@@ -238,7 +243,7 @@ async def get_robot_list(weightclass: Weightclass):
     return returnable
 
 
-@app.post("/api/v1/advance")
+@app.post("/api/v1/advance", tags=["utilities"])
 def advance_standby_robot():
     """advance standby robots, both red and blue, to active slot"""
     global robot_blue, robot_red, next_robot_blue, next_robot_red
@@ -248,7 +253,7 @@ def advance_standby_robot():
     next_robot_red = EMPTY_ROBOT
 
 
-@app.post("/api/v1/set/{queue_pos}/{color}")
+@app.post("/api/v1/set/{queue_pos}/{color}", tags=["activerobot"])
 def set_robot_by_name(queue_pos: QueuePosition, color: Color, robot_name: RobotName):
     """set active or next robot by it's name"""
     global robot_blue, robot_red, next_robot_blue, next_robot_red
@@ -265,7 +270,7 @@ def set_robot_by_name(queue_pos: QueuePosition, color: Color, robot_name: RobotN
             next_robot_red = new_robot
 
 
-@app.post("/api/v1/special/{type}/{weightclass}")
+@app.post("/api/v1/special/{type}/{weightclass}", tags=["utilities"])
 def start_special_match(type: SpecialMatchType, weightclass: Weightclass):
     """activate special match type"""
     global robot_blue, robot_red
@@ -277,7 +282,7 @@ def start_special_match(type: SpecialMatchType, weightclass: Weightclass):
         robot_blue = rumble(weightclass)
 
 
-@app.get("/api/v1/images/get/{id}", responses={200: {"content": {"image/png": {}}}}, response_class=Response)
+@app.get("/api/v1/images/get/{id}", tags=["images"], responses={200: {"content": {"image/png": {}}}}, response_class=Response)
 def get_image_by_id(id: str, transform: ImageTransform | None = None, max_size: int | None = None):
     # crop = True if crop is not None else False
     if id in id_lookup.keys():
@@ -293,7 +298,7 @@ def get_image_by_id(id: str, transform: ImageTransform | None = None, max_size: 
         return return_image_from_id(id, transform=transform, max_size=max_size)
 
 
-@app.post("/api/v1/images/save/{id}")
+@app.post("/api/v1/images/save/{id}", tags=["images"])
 async def handle_image_save(id, request: Request):
     form_data = await request.form()
     if form_data["imgBase64"].find("image/png") > 0:
@@ -309,7 +314,7 @@ async def handle_image_save(id, request: Request):
             f"File type{form_data["imgBase64"].split[";"][0].split(":")[-1]} not supported")
 
 
-@app.post("/api/v1/robots/edit/{id}")
+@app.post("/api/v1/robots/edit/{id}", tags=["robot"])
 async def edit_robot(id: str, request: Request):
     global robots
     json = await request.json()
@@ -323,14 +328,14 @@ async def edit_robot(id: str, request: Request):
     persist(robots, id_lookup, name_lookup)
 
 
-@app.delete("/api/v1/robots/delete/{id}")
+@app.delete("/api/v1/robots/delete/{id}", tags=["robot"])
 def delete_robot(id: str):
     if id in id_lookup.keys():
         robots[id_lookup[id]] = DELETED_ROBOT
     persist(robots, id_lookup, name_lookup)
 
 
-@app.post("/api/v1/robots/list/{mode}")
+@app.post("/api/v1/robots/list/{mode}", tags=["robotlist"])
 async def replace_robot_list(mode: RobotListMode, request: Request):
     global robots, id_lookup, name_lookup
     if mode == RobotListMode.replace:
@@ -362,21 +367,21 @@ async def replace_robot_list(mode: RobotListMode, request: Request):
     persist(robots, id_lookup, name_lookup)
 
 
-@app.delete("/api/v1/robots/list/clear")
+@app.delete("/api/v1/robots/list/clear", tags=["robotlist"])
 async def clear_robot_list():
     global robots, id_lookup, name_lookup
     persist([], {}, {})
     robots, id_lookup, name_lookup = load_persisted()
 
 
-@app.get("/api/v1/tournaments/list")
+@app.get("/api/v1/tournaments/list", tags=["tournaments"])
 async def get_tournaments():
     tournaments = challonge_cache(ChDataType.tournaments)
     # return [{"name": tournament["name"], "id": tournament["id"]} for tournament in tournaments]
     return tournaments
 
 
-@app.post("/api/v1/tournaments/active")
+@app.post("/api/v1/tournaments/active", tags=["tournaments"])
 async def set_active_tournament(request: Request):
     global active_tournament, ch_cache_last_updated
     # force cache update because new tournament
@@ -388,19 +393,19 @@ async def set_active_tournament(request: Request):
     ch_cache_last_updated = datetime.datetime(1970, 1, 1)
 
 
-@app.get("/api/v1/tournaments/active")
+@app.get("/api/v1/tournaments/active", tags=["tournaments"])
 def get_active_tournament():
     return active_tournament
 
 
-@app.get("/api/v1/tournaments/active/participants")
+@app.get("/api/v1/tournaments/active/participants", tags=["tournaments"])
 def get_active_tournament_pariticipants():
     global active_tournament
     participants = challonge_cache(ChDataType.participants)
     return participants
 
 
-@app.get("/api/v1/tournaments/active/matches")
+@app.get("/api/v1/tournaments/active/matches", tags=["tournaments"])
 def get_active_tournament_matches():
     global active_tournament
     matches = challonge_cache(ChDataType.matches)

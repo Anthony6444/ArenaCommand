@@ -2,7 +2,8 @@ var fields = [
     "name",
     "teamname",
     "flavortext",
-    "weightclass"
+    "weightclass",
+    // "record",
 ]
 var buttonPushedId = null;
 var fightcardSelectedId = null;

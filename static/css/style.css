@@ -14,8 +14,6 @@ header {
     padding-right: calc(2em - var(--scrollbar-width));
 }
 
-
-
 .fightcard {
     padding: 1em;
     border-radius: 0.5em;
@@ -23,7 +21,8 @@ header {
     height: 100%;
 }
 
-.fightcard h4, .not-fightcard h4 {
+.fightcard h4,
+.not-fightcard h4 {
     margin-bottom: 0;
 }
 
@@ -303,4 +302,98 @@ p.error-404 {
 h1.error-404 {
     margin-top: 3vh;
     font-size: 800%;
+}
+
+.judgecard {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.judgecard div.content-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.judgecard div.image-container {
+    display: flex;
+    position: relative;
+}
+
+.judgecard div.outer-image-container {
+    padding-right: 30px;
+    padding-left: 30px;
+    position: relative;
+}
+
+.judgecard div.outer-image-container::after {
+    display: flex;
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 30px;
+    background: lightgray;
+}
+
+.judgecard.red div.image-container::before {
+    border-top-color: #a21d23;
+}
+
+.judgecard.blue div.image-container::before {
+    border-top-color: #2c338e;
+}
+
+.judgecard div.image-container::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-top: 100px solid;
+    border-right: 150px solid transparent;
+}
+
+
+.judgecard div.image-container::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-bottom: 100px solid lightgray;
+    border-left: 150px solid transparent;
+}
+
+.judgecard p.weightclass {
+    position: absolute;
+    color: black;
+    top: 0;
+    z-index: 2;
+    transform-origin: bottom left;
+    transform: translate(359px, -15px) rotate(90deg);
+}
+
+.judgecard div.flavortext {
+    background: lightgray;
+    padding: 20px;
+}
+
+.judgecard div.flavortext p {
+    color: black;
+    width: 100%;
+}
+
+.judgecard div.top-container {
+    padding: 15px;
+}
+
+.judgecard h3,
+.judgecard h5,
+.judgecard p {
+    width: fit-content;
+    display: inline-flex;
 }

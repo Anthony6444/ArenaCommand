@@ -17,16 +17,50 @@
     </head>
 
     <body class=" d-flex flex-column h-100">
-        <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">{header}</header>
+        {header}
         <div class="container flex-shrink-0">
             <div class="row">
                 <div class="col-1"></div>
                 <div class="col-4">
-                    <div class="judgecard blue"></div>
+                    <div class="judgecard blue">
+                        <div class="top-container">
+                            <div class="content-row">
+                                <h3 id="blue-name">BLUENAME</h3>
+                                <p id="blue-winrecord">BLUERECORD</p>
+                            </div>
+                            <h5 id="blue-teamname">BLUETEAM</h5>
+                        </div>
+                        <div class="outer-image-container">
+                            <div class="image-container">
+                                <img id="blue-image" src width="100%">
+                            </div>
+                            <p id="blue-weightclass" class="weightclass">BLUEWEIGHT</p>
+                        </div>
+                        <div class="flavortext">
+                            <p id="blue-flavortext">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe molestiae error optio fugit neque voluptas repellendus minus nulla magni illum, eaque voluptatibus quas tenetur dolore laborum? Quo quae exercitationem obcaecati.</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-2"></div>
                 <div class="col-4">
-                    <div class="judgecard red"></div>
+                    <div class="judgecard red">
+                        <div class="top-container">
+                            <div class="content-row">
+                                <h3 id="red-name">red-name</h3>
+                                <p id="red-winrecord">red-winrecord</p>
+                            </div>
+                            <h5 id="red-teamname">red-teamname</h5>
+                        </div>
+                        <div class="outer-image-container">
+                            <div class="image-container">
+                                <img id="red-image" src width="100%">
+                            </div>
+                            <p id="red-weightclass" class="weightclass">red-weightclass</p>
+                        </div>
+                        <div class="flavortext">
+                            <p id="red-flavortext">Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe molestiae error optio fugit neque voluptas repellendus minus nulla magni illum, eaque voluptatibus quas tenetur dolore laborum? Quo quae exercitationem obcaecati.</p>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-1"></div>
 
@@ -38,6 +72,20 @@
             crossorigin="anonymous"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script>
+            $.getJSON("/api/v1/active/current/blue/image",
+                function (data) {
+                    console.log(data)
+                    $("#blue-image").attr("src", data["text"].replace("pad","none"))
+                }
+            );
+            $.getJSON("/api/v1/active/current/red/image",
+                function (data) {
+                    console.log(data)
+                    $("#red-image").attr("src", data["text"].replace("pad","none"))
+                }
+            );
+        </script>
     </body>
 
 </html>
