@@ -197,7 +197,7 @@ EMPTY_ROBOT = {
 }
 
 DELETED_ROBOT = {
-    Field.id: "rsl-logo",
+    Field.id: "DELETED",
     Field.name: "DELETED",
     Field.teamname: "DELETED",
     Field.weightclass: Weightclass.antweight,
@@ -228,26 +228,20 @@ def rumble(weightclass: Weightclass):
     }
 
 
-def persist(robots, id_lookup, name_lookup):
+def persist(robots):
     with open("database.json", "w") as f:
         json.dump({
             "robots": robots,
-            "id_lookup": id_lookup,
-            "name_lookup": name_lookup
         }, f)
 
 
-def load_persisted() -> tuple[list[dict[Field, str | ImageStatus]], dict[str, int], dict[str, int]]:
+def load_persisted() -> dict[str, dict[Field, str | ImageStatus]]:
     if os.path.exists("database.json"):
         with open("database.json") as f:
             data: dict = json.load(f)
-            returndata = []
-            for field in ["robots", "id_lookup", "name_lookup"]:
-                if field in data.keys():
-                    returndata.append(data[field])
-        if len(returndata) >= 3:
-            return returndata
-    return [], {}, {}
+            if "robots" in data.keys():
+                return data["robots"]
+    return {}
 
 
 def json_serial(obj):

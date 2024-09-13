@@ -19,7 +19,7 @@ from sensitivedata import *
 ch_cache_last_updated = datetime.datetime(1970, 1, 1)
 ch_cache_data = {}
 
-robots, id_lookup, name_lookup, = load_persisted()
+robots = load_persisted()
 
 robot_red: dict[Field, str] = EMPTY_ROBOT
 robot_blue: dict[Field, str] = EMPTY_ROBOT
@@ -128,8 +128,8 @@ def get_robot_record_id(id: str):
             participants[m["player1_id"]]["ties"] += 1
             participants[m["player2_id"]]["ties"] += 1
 
-    if id in id_lookup.keys():
-        current_name = robots[id_lookup[id]][Field.name]
+    if id in [robot[1][Field.id] for robot in robots.items()]:
+        current_name = robots[id][Field.name]
     else:
         return ""  # will return if id does not resolve to a robot, such as for a grudge match
 
@@ -147,8 +147,8 @@ def robot_exists_in_cur_ch_tournament(id: str) -> bool:
     c_parts = challonge_cache(ChDataType.participants)
     # pare down challonge data to just names
     p_names = [p["name"] for p in c_parts]
-    if id in id_lookup.keys():
-        current_name = robots[id_lookup[id]][Field.name]
+    if id in [robot[1][Field.id] for robot in robots.items()]:
+        current_name = robots[id][Field.name]
         for name in p_names:
             if current_name == name:
                 return True
@@ -231,11 +231,12 @@ def get_robot_field_json(color: Color, field: Field, queue_pos: QueuePosition) -
 async def get_robot_list(weightclass: Weightclass):
     """get list of robots selected by weightclass"""
     global robots
+    print(robots.items())
     if weightclass != Weightclass.all:
         returnable = [
-            robot for robot in robots if robot[Field.weightclass] == weightclass]
+            robot[1] for robot in robots.items() if robot[Field.weightclass] == weightclass]
     else:
-        returnable = robots
+        returnable = [robot[1] for robot in robots.items()]
     for robot in returnable:
         robot[Field.record] = get_robot_record_id(robot[Field.id])
         robot[Field.existsinchallonge] = robot_exists_in_cur_ch_tournament(
@@ -257,7 +258,7 @@ def advance_standby_robot():
 def set_robot_by_name(queue_pos: QueuePosition, color: Color, robot_name: RobotName):
     """set active or next robot by it's name"""
     global robot_blue, robot_red, next_robot_blue, next_robot_red
-    new_robot = robots[name_lookup[robot_name.robot_name.strip()]]
+    new_robot = robots[name_to_id(robot_name.robot_name.strip())]
     if queue_pos == QueuePosition.current:
         if color == Color.blue:
             robot_blue = new_robot
@@ -285,8 +286,8 @@ def start_special_match(type: SpecialMatchType, weightclass: Weightclass):
 @app.get("/api/v1/images/get/{id}", tags=["images"], responses={200: {"content": {"image/png": {}}}}, response_class=Response)
 def get_image_by_id(id: str, transform: ImageTransform | None = None, max_size: int | None = None):
     # crop = True if crop is not None else False
-    if id in id_lookup.keys():
-        image_status = robots[id_lookup[id]]["imagestatus"]
+    if id in [robot[1][Field.id] for robot in robots.items()]:
+        image_status = robots[id][Field.imagestatus]
     else:
         image_status = ImageStatus.error
 
@@ -307,8 +308,8 @@ async def handle_image_save(id, request: Request):
         image_data = base64.b64decode(data)
         image = Image.open(io.BytesIO(image_data))
         image.save(f"./images/{id}.png")
-        robots[id_lookup[id]][Field.imagestatus] = ImageStatus.ok
-        persist(robots, id_lookup, name_lookup)
+        robots[id][Field.imagestatus] = ImageStatus.ok
+        persist(robots)
     else:
         raise TypeError(
             f"File type{form_data["imgBase64"].split[";"][0].split(":")[-1]} not supported")
@@ -318,28 +319,28 @@ async def handle_image_save(id, request: Request):
 async def edit_robot(id: str, request: Request):
     global robots
     json = await request.json()
-    if id in id_lookup.keys():
-        # print(robots[id_lookup[id]])
-        robots[id_lookup[id]][Field.name] = json["name"]
-        robots[id_lookup[id]][Field.teamname] = json["teamname"]
-        robots[id_lookup[id]][Field.weightclass] = json["weightclass"]
-        robots[id_lookup[id]][Field.flavortext] = json["flavortext"]
-        # print(robots[id_lookup[id]])
-    persist(robots, id_lookup, name_lookup)
+    if id in [robot[Field.id] for robot in robots]:
+        # print(robots[<>[id]])
+        robots[id][Field.name] = json["name"]
+        robots[id][Field.teamname] = json["teamname"]
+        robots[id][Field.weightclass] = json["weightclass"]
+        robots[id][Field.flavortext] = json["flavortext"]
+        # print(robots[<>[id]])
+    persist(robots)
 
 
 @app.delete("/api/v1/robots/delete/{id}", tags=["robot"])
 def delete_robot(id: str):
-    if id in id_lookup.keys():
-        robots[id_lookup[id]] = DELETED_ROBOT
-    persist(robots, id_lookup, name_lookup)
+    if id in [robot[1][Field.id] for robot in robots.items()]:
+        robots.pop(id)
+    persist(robots)
 
 
 @app.post("/api/v1/robots/list/{mode}", tags=["robotlist"])
 async def replace_robot_list(mode: RobotListMode, request: Request):
-    global robots, id_lookup, name_lookup
+    global robots
     if mode == RobotListMode.replace:
-        robots = []
+        robots = {}
     # TODO: implement append mode, handle robots with same name
     assert mode == RobotListMode.replace
     data = await request.json()
@@ -353,25 +354,23 @@ async def replace_robot_list(mode: RobotListMode, request: Request):
             flavortext = flavortext[1:]
         if flavortext.endswith("\"") or flavortext.endswith("\'"):
             flavortext = flavortext[:-1]
-        robots.append({
+        robots[id] = {
             Field.id: id,
             Field.name: name,
             Field.teamname: robot[data["key"]["team_name"]].strip(),
             Field.weightclass: Weightclass[robot[data["key"]["weightclass"]].strip().lower()],
             Field.flavortext: flavortext,
             Field.imagestatus: ImageStatus.ok if image_exists(id) else ImageStatus.error,
-        })
-        id_lookup.update({id: len(robots)-1})
-        name_lookup.update({name: len(robots)-1})
+        }
     # print(robots)
-    persist(robots, id_lookup, name_lookup)
+    persist(robots)
 
 
 @app.delete("/api/v1/robots/list/clear", tags=["robotlist"])
 async def clear_robot_list():
-    global robots, id_lookup, name_lookup
-    persist([], {}, {})
-    robots, id_lookup, name_lookup = load_persisted()
+    global robots
+    persist({})
+    robots = load_persisted()
 
 
 @app.get("/api/v1/tournaments/list", tags=["tournaments"])
@@ -416,8 +415,8 @@ app.mount("/", StaticFiles(directory="icons"), name="icons")
 
 
 def return_image_from_id(image_name, transform: ImageTransform | None, max_size: int | None = None) -> Response:
-    if (image_name in id_lookup.keys()) or image_name == "rsl-logo":
-        # image_name = robots[id_lookup[image_id]]["name"]
+    if (image_name in [robot[1][Field.id] for robot in robots.items()]) or image_name == "rsl-logo":
+        # image_name = robots[<>[image_id]]["name"]
         try:
             with open(f"./images/{image_name}.png", "rb") as f:
                 image_pil = Image.open(f, "r")
