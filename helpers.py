@@ -68,7 +68,7 @@ def get_ip():
 
 
 def name_to_id(name: str) -> str:
-    return str(sha1(name.encode("utf-8")).hexdigest())
+    return str(sha1(name.strip().rstrip().encode("utf-8")).hexdigest())
 
 
 def image_exists(id: str) -> bool:
@@ -91,8 +91,8 @@ class WebPage(StrEnum):
     settings = auto()
 
 
-class RobotName(BaseModel):
-    robot_name: str
+class RobotId(BaseModel):
+    robot_id: str
 
 
 class QueuePosition(StrEnum):
@@ -125,6 +125,13 @@ class Weightclass(StrEnum):
     hobbyweight = auto()
     featherweight = auto()
     all = auto()
+
+
+class NewRobot(BaseModel):
+    name: str
+    teamname: str
+    flavortext: str
+    weightclass: Weightclass
 
 
 class ImageStatus(StrEnum):
@@ -171,7 +178,7 @@ def get_header(webpage: WebPage):
         return content
 
 
-def get_footer(webpage: WebPage):
+def get_footer(webpage: WebPage, year: str = "1999", author: str = "Author", program: str = "Name", version: str = "0.0.1a"):
     with open("./static/footer.html", "r") as f:
         content = f.read()
         for page in WebPage:
@@ -179,12 +186,22 @@ def get_footer(webpage: WebPage):
                 content = content.replace(f"{{{page.name}}}", "active")
             else:
                 content = content.replace(f"{{{page.name}}}", "")
+        content = content.replace("{year}", year)
+        content = content.replace("{author}", author)
+        content = content.replace("{program}", program)
+        content = content.replace("{version}", version)
         return content
 
 
 def readme_to_html():
     with open("./README.md", "r") as f:
         return markdown.markdown(f.read())
+
+
+def sort_robots_by_field(robots: dict[str, dict[Field, str | ImageStatus]], field: Field) -> dict[str, dict[Field, str | ImageStatus]]:
+    def findkey(subdict: dict):
+        return subdict[field]
+    return sorted(robots, key=findkey)
 
 
 EMPTY_ROBOT = {

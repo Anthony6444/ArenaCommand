@@ -30,14 +30,17 @@ function getUpNextRobotDetails(color) {
 function populateRobotList() {
     $.get("/api/v1/list/all", success = function (result) {
         for (j = 0; j < result.length; j++) {
-            button = $("<span>", { "id": "card" + j, "class": "card selector-card m-2 clickable row" });
+            button = $("<span>", { "id": "card" + j, "class": "card selector-card m-2 clickable row", "data-robot-id": result[j]["id"]});
             // console.log(result[j]["weightclass"])
-            if (result[j]["weightclass"] == "antweight") {
+            if (result[j]["weightclass"].toLowerCase() == "antweight") {
                 button.html("<p class=\"no-padding\"><i class=\"fa fa-car\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
                 $("#ant-list").append(button)
-            } else if (result[j]["weightclass"] == "beetleweight") {
+            } else if (result[j]["weightclass"].toLowerCase() == "beetleweight") {
                 button.html("<p class=\"no-padding\"><i class=\"fa fa-truck\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
                 $("#beetle-list").append(button)
+            }
+            else {
+                console.log("ERROR: " + result[j]["name"]);
             }
             // console.log(button)
             // $("#beetle-list").append($("<button>", ))
@@ -49,18 +52,18 @@ function populateRobotList() {
 function waitForRobotSelectedUpdateFightcard() {
     if (buttonPushedId != null) {
         // console.log(buttonPushedId, ";", fightcardSelectedId, ";")
-        robot_name = $("#" + buttonPushedId).text();
+        robot_id = $("#" + buttonPushedId).attr("data-robot-id");
         if (fightcardSelectedId == "current-blue") {
-            $.jpost("/api/v1/set/current/blue", data = { "robot_name": robot_name })
+            $.jpost("/api/v1/set/current/blue", data = { "robot_id": robot_id })
         }
         else if (fightcardSelectedId == "current-red") {
-            $.jpost("/api/v1/set/current/red", data = { "robot_name": robot_name })
+            $.jpost("/api/v1/set/current/red", data = { "robot_id": robot_id })
         }
         else if (fightcardSelectedId == "next-blue") {
-            $.jpost("/api/v1/set/next/blue", data = { "robot_name": robot_name })
+            $.jpost("/api/v1/set/next/blue", data = { "robot_id": robot_id })
         }
         else if (fightcardSelectedId == "next-red") {
-            $.jpost("/api/v1/set/next/red", data = { "robot_name": robot_name })
+            $.jpost("/api/v1/set/next/red", data = { "robot_id": robot_id })
         }
         else {
             console.log("invalid fightcard selected")

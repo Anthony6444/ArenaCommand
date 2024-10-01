@@ -166,6 +166,23 @@ $("#edit-save-robot").click(function (event) {
     populateRobotEditableList();
 })
 
+$("#new-save-robot").click(function (event) {
+    $.ajax({
+        type: "POST",
+        contentType: "application/json",
+        dataType: "json",
+        url: "/api/v1/robots/new",
+        data: JSON.stringify({
+            name: $("#new-form-robot-name").val(),
+            teamname: $("#new-form-team-name").val(),
+            flavortext: $("#new-form-flavortext").val(),
+            weightclass: $("#new-form-weightclass").val(),
+        })
+    });
+    $("#new-robot-modal").modal("toggle");
+    populateRobotEditableList();
+})
+
 $("#edit-delete-robot").click(function (event) {
     $.ajax({
         type: "DELETE",

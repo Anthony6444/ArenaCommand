@@ -57,6 +57,44 @@
                 </div>
             </div>
         </div>
+        <div id="new-robot-modal" class="modal fade" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create New Robot</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="new-form-robot-name" class="form-label">Robot Name</label>
+                                <input type="text" class="form-control" id="new-form-robot-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="new-form-team-name" class="form-label">Team Name</label>
+                                <input type="text" class="form-control" id="new-form-team-name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="new-form-flavortext" class="form-label">Flavor Text</label>
+                                <textarea class="form-control" id="new-form-flavortext" rows="4"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="new-form-weightclass" class="form-label">Weight Class</label>
+                                <select class="form-select" id="new-form-weightclass">
+                                    <option value="antweight">Antweight</option>
+                                    <option value="beetleweight">Beetleweight</option>
+                                </select>
+                            </div>
+                            <input type="text" class="hidden" id="edit-form-id">
+                        </form> 
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-primary" id="new-save-robot">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="load-csv-modal" class="modal fade" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -109,7 +147,8 @@
         </div>
         <div class="container">
             <div class="row" id="action-button-container">
-                <button class="btn btn-danger" id="action-clear">Clear List</button>
+                <button class="btn btn-success" id="action-new" data-bs-toggle="modal" data-bs-target="#new-robot-modal">New robot</button>
+                <button class="btn btn-danger" id="action-clear">Clear list</button>
                 <button class="btn btn-primary" id="action-load" data-bs-toggle="modal"
                     data-bs-target="#load-csv-modal">Load from CSV</button>
             </div>

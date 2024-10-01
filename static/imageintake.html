@@ -29,14 +29,15 @@
                                     aria-controls="capture-tab-pane" aria-selected="true">Capture Image</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link disabled" id="upload-tab" data-bs-toggle="tab"
+                                <button class="nav-link" id="upload-tab" data-bs-toggle="tab"
                                     data-bs-target="#upload-tab-pane" type="button" role="tab"
                                     aria-controls="upload-tab-pane" aria-selected="false">Upload Image</button>
                             </li>
 
                         </ul>
                         <div class="tab-content" id="tab-content">
-                            <div class="hidden alert alert-danger" role="alert" id="noimage-alert">Please take a photo first.</div>
+                            <div class="hidden alert alert-danger" role="alert" id="noimage-alert">Please take a photo
+                                first.</div>
                             <div class="tab-pane fade show active" id="capture-tab-pane" role="tabpanel"
                                 aria-labelledby="capture-tab" tabindex="0">
                                 <!-- <img src="/images/get/rsl-logo.png" style="max-width: 100%;"> -->
@@ -65,22 +66,9 @@
                             <div class="tab-pane fade" id="upload-tab-pane" role="tabpanel" aria-labelledby="upload-tab"
                                 tabindex="0">
                                 <form>
-                                    <div class="form-check">
-                                        <input type="radio" name="radios" class="form-check-input"
-                                            id="form-upload-new-image" disabled>
-                                        <label class="form-check-label" for="form-upload-new-image">Upload new
-                                            image</label>
-                                    </div>
-                                    <div class="mb-3 form-check">
-                                        <input checked type="radio" name="radios" class="form-check-input"
-                                            id="form-leave-unchanged">
-                                        <label class="form-check-label" for="form-leave-unchanged">Leave
-                                            unchanged</label>
-                                    </div>
-
                                     <div class="mb-3">
                                         <label class="form-label" for="form-image-file">Upload Image</label>
-                                        <input type="file" class="form-control" id="form-image-file" disabled>
+                                        <input type="file" class="form-control" id="form-image-file" accept="image/*" multiple="false">
                                     </div>
                                 </form>
                             </div>
