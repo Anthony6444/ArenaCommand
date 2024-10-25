@@ -189,7 +189,7 @@ def get_robot_image_json(color: Color, queue_pos: QueuePosition, transform: Imag
         id = temp_red[Field.id]
     elif color == Color.blue:
         id = temp_blue[Field.id]
-    return {"field": "imageurl", "text": f"http://localhost/api/v1/images/get/{id}"}
+    return {"field": "imageurl", "text": f"http://{get_ip()}/api/v1/images/get/{id}"}
 
 
 @app.get("/api/v1/active/{queue_pos}/{color}/record", tags=["activerobot"])
@@ -226,7 +226,7 @@ def get_robot_field_json(color: Color, field: Field, queue_pos: QueuePosition) -
 @app.get("/api/v1/list/{weightclass}", tags=["robotlist"], deprecated=True,
          description="Get list of robots selected by weightclass. Deprecated, please use `api/v1/robots/list/{weightclass}` instead")
 @app.get("/api/v1/robots/list/{weightclass}", tags=["robotlist"])
-async def get_robot_list(weightclass: Weightclass):
+async def get_robot_list(weightclass: Weightclass, sort: Field | None = Field.name, reverse: bool | None = False):
     """Get list of robots selected by weightclass"""
     global robots
     # print(robots.items())
@@ -240,7 +240,7 @@ async def get_robot_list(weightclass: Weightclass):
         robot[Field.record] = get_robot_record_id(robot[Field.id])
         robot[Field.existsinchallonge] = robot_exists_in_cur_ch_tournament(
             robot[Field.id])
-    return sort_robots_by_field(returnable, Field.name)
+    return sort_robots_by_field(returnable, sort, reverse)
 
 
 @app.post("/api/v1/advance", tags=["utilities"])
@@ -255,7 +255,7 @@ def advance_standby_robot():
 
 @app.post("/api/v1/set/{queue_pos}/{color}", tags=["activerobot"])
 def set_robot_by_name(queue_pos: QueuePosition, color: Color, robot_id: RobotId):
-    """set active or next robot by it's name"""
+    """set active or next robot by it's id"""
     global robot_blue, robot_red, next_robot_blue, next_robot_red
     new_robot = robots[robot_id.robot_id]
     if queue_pos == QueuePosition.current:

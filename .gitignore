@@ -324,3 +324,5 @@ images/*
 !images/rsl-logo.png
 
 sensitivedata.py
+
+*.csv

@@ -16,22 +16,18 @@ TAGS_META = [
     {
         "name": "activerobot",
         "description": "Endpoints to get and manage the current and next up robots. These return json data.",
-
     },
     {
         "name": "robotlist",
         "description": "Endpoints that deal with lists of robots.",
-
     },
     {
         "name": "robot",
         "description": "Endpoints that deal with a single robot, addressed by id or name",
-
     },
     {
         "name": "tournaments",
         "description": "Operactions that deal with challonge data and tournaments.",
-
     },
     {
         "name": "images",
@@ -198,10 +194,10 @@ def readme_to_html():
         return markdown.markdown(f.read())
 
 
-def sort_robots_by_field(robots: dict[str, dict[Field, str | ImageStatus]], field: Field) -> dict[str, dict[Field, str | ImageStatus]]:
+def sort_robots_by_field(robots: dict[str, dict[Field, str | ImageStatus]], sort: Field = Field.name, reverse: bool | None = False) -> dict[str, dict[Field, str | ImageStatus]]:
     def findkey(subdict: dict):
-        return subdict[field]
-    return sorted(robots, key=findkey)
+        return subdict[sort]
+    return sorted(robots, key=findkey, reverse=reverse | False)
 
 
 EMPTY_ROBOT = {

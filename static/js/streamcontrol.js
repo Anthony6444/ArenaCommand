@@ -30,7 +30,7 @@ function getUpNextRobotDetails(color) {
 function populateRobotList() {
     $.get("/api/v1/list/all", success = function (result) {
         for (j = 0; j < result.length; j++) {
-            button = $("<span>", { "id": "card" + j, "class": "card selector-card m-2 clickable row", "data-robot-id": result[j]["id"]});
+            button = $("<div>", { "id": "card" + j, "class": "card selector-card m-2 clickable row", "data-robot-id": result[j]["id"]});
             // console.log(result[j]["weightclass"])
             if (result[j]["weightclass"].toLowerCase() == "antweight") {
                 button.html("<p class=\"no-padding\"><i class=\"fa fa-car\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
