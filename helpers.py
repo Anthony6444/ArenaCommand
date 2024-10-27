@@ -94,6 +94,7 @@ class RobotId(BaseModel):
 class QueuePosition(StrEnum):
     current = auto()
     next = auto()
+    standby = auto()
 
 
 class Color(StrEnum):
@@ -120,6 +121,7 @@ class Weightclass(StrEnum):
     mantisweight = auto()
     hobbyweight = auto()
     featherweight = auto()
+    unset = auto()
     all = auto()
 
 
@@ -163,6 +165,12 @@ class ChCacheAction(StrEnum):
     refresh = auto()
 
 
+class AdvanceMethod(StrEnum):
+    next_to_current = auto()
+    standby_to_current = auto()
+    advance_all = auto()
+
+
 def get_header(webpage: WebPage):
     with open("./static/header.html", "r") as f:
         content = f.read()
@@ -200,11 +208,11 @@ def sort_robots_by_field(robots: dict[str, dict[Field, str | ImageStatus]], sort
     return sorted(robots, key=findkey, reverse=reverse | False)
 
 
-EMPTY_ROBOT = {
+EMPTY_ROBOT: dict[Field, str | Weightclass | ImageStatus] = {
     Field.id: "rsl-logo",
     Field.name: "",
     Field.teamname: "",
-    Field.weightclass: Weightclass.antweight,
+    Field.weightclass: Weightclass.unset,
     Field.flavortext: "",
     Field.imagestatus: ImageStatus.error,
 }
@@ -213,13 +221,13 @@ DELETED_ROBOT = {
     Field.id: "DELETED",
     Field.name: "DELETED",
     Field.teamname: "DELETED",
-    Field.weightclass: Weightclass.antweight,
+    Field.weightclass: Weightclass.unset,
     Field.flavortext: "DELETED",
     Field.imagestatus: ImageStatus.error,
 }
 
 
-def grudge_match(weightclass: Weightclass):
+def grudge_match(weightclass: Weightclass) -> dict[Field, str | Weightclass | ImageStatus]:
     return {
         Field.id: "grudge",
         Field.name: "GRUDGE MATCH",
@@ -230,7 +238,7 @@ def grudge_match(weightclass: Weightclass):
     }
 
 
-def rumble(weightclass: Weightclass):
+def rumble(weightclass: Weightclass) -> dict[Field, str | Weightclass | ImageStatus]:
     return {
         Field.id: "rumble",
         Field.name: f"{weightclass.upper()} RUMBLE",

@@ -5,28 +5,46 @@ var fields = [
     "weightclass",
     // "record",
 ]
+var positions = [
+    "current",
+    "next",
+    "standby"
+]
+var colors = [
+    "red",
+    "blue"
+]
 var buttonPushedId = null;
 var fightcardSelectedId = null;
-function getCurrentRobotDetails(color) {
-    for (i = 0; i < fields.length; i++) {
-        $.ajax({
-            url: "/api/v1/active/current/" + color + "/" + fields[i],
-            success: function (result) {
-                $("#" + color + "-" + result["field"]).html(result["text"]);
+
+function getAllRobotDetails() { 
+    for (k=0; k<colors.length; k++){    
+        for (j=0; j < positions.length; j++) {
+            for (i = 0; i < fields.length; i++) {
+                const wrapper = {
+                    color: colors[k],
+                    position: positions[j],
+                    field: fields[i],
+                    fetchAndHandleData: function () {
+                        $.ajax({
+                            url: "/api/v1/active/"+ this.position +"/" + this.color + "/" + this.field,
+                            success: $.proxy(function (result) {
+                                $("#" + this.position + "-" + this.color + "-" + this.field).html(result["text"] == "" ? "&nbsp;" : result["text"]);
+                                if (this.field == "weightclass") {
+                                    wci = result["text"].charAt(0).toUpperCase();
+                                    wci = wci == "U" ? "" : wci; 
+                                    $("#" + this.position + "-" + this.color).attr("data-sc-wc", wci);
+                                }
+                            }, this)
+                        });
+                    }
+                }
+                wrapper.fetchAndHandleData();
             }
-        });
+        }
     }
-}
-function getUpNextRobotDetails(color) {
-    for (i = 0; i < fields.length - 3; i++) {
-        $.ajax({
-            url: "/api/v1/active/next/" + color + "/" + fields[i],
-            success: function (result) {
-                $("#next-" + color + "-" + result["field"]).html(result["text"]);
-            }
-        });
-    }
-}
+ }
+
 function populateRobotList() {
     $.get("/api/v1/list/all", success = function (result) {
         for (j = 0; j < result.length; j++) {
@@ -34,10 +52,10 @@ function populateRobotList() {
             // console.log(result[j]["weightclass"])
             if (result[j]["weightclass"].toLowerCase() == "antweight") {
                 button.html("<p class=\"no-padding\"><i class=\"fa fa-car\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
-                $("#ant-list").append(button)
+                $("#ant-list").append(button);
             } else if (result[j]["weightclass"].toLowerCase() == "beetleweight") {
                 button.html("<p class=\"no-padding\"><i class=\"fa fa-truck\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
-                $("#beetle-list").append(button)
+                $("#beetle-list").append(button);
             }
             else {
                 console.log("ERROR: " + result[j]["name"]);
@@ -64,6 +82,12 @@ function waitForRobotSelectedUpdateFightcard() {
         }
         else if (fightcardSelectedId == "next-red") {
             $.jpost("/api/v1/set/next/red", data = { "robot_id": robot_id })
+        }
+        else if (fightcardSelectedId == "standby-blue") {
+            $.jpost("/api/v1/set/standby/blue", data = { "robot_id": robot_id })
+        }
+        else if (fightcardSelectedId == "standby-red") {
+            $.jpost("/api/v1/set/standby/red", data = { "robot_id": robot_id })
         }
         else {
             console.log("invalid fightcard selected")
@@ -121,19 +145,23 @@ function closeOverlay() {
     document.getElementById('bot-selector').classList.remove('active');
 }
 function updateRobotDetails() {
-    getCurrentRobotDetails("blue");
-    getCurrentRobotDetails("red");
-    getUpNextRobotDetails("blue");
-    getUpNextRobotDetails("red");
-    if ($("#red-weightclass").text() != $("#blue-weightclass").text()) {
-        $("#weightclass-top").text("");
-        // $("#weight-mismatch-main").removeClass("hidden");
-    } else {
-        // $("#weightclass-top").text($("#red-weightclass").text());
-        $("#weight-mismatch-main").addClass("hidden");
+    getAllRobotDetails(); 
+    setTimeout(
+        function(){
+            for (i=0; i < positions.length; i++) {
+                if ($(`#${positions[i]}-blue-weightclass`).text() == $(`#${positions[i]}-red-weightclass`).text() 
+                        || $(`#${positions[i]}-blue-weightclass`).text() == "unset"
+                        || $(`#${positions[i]}-red-weightclass`).text() == "unset") {
+                    console.log(`#${positions[i]}-mismatch`)
+                    $(`#${positions[i]}-mismatch`).addClass("hidden");
+                } else {
+                    $(`#${positions[i]}-mismatch`).removeClass("hidden");
+                }
+            }
+        }, 500);
     }
-}
 updateRobotDetails();
+// setInterval(updateRobotDetails, 10000)
 populateRobotList();
 $.extend({
     jpost: function (url, body) {

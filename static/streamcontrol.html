@@ -30,27 +30,18 @@
             </div>
         </div>
         <div class="container">
-            <div class="row text-center">
-                <div class="col-1"></div>
-                <div class="col-4"></div>
-                <div class="col-2"></div>
-                <div class="col-4"></div>
-                <div class="col-1"></div>
-
-            </div>
-            <div class="row fightcard-row">
-
+            <div class="row fightcard-row" id="current-robots">
                 <div class="col-1">
                 </div>
                 <div class="col-4">
                     <div class="fightcard blue" id="current-blue">
-                        <h3 id="blue-name"></h3>
-                        <h5 id="blue-teamname"></h5>
-                        <p id="blue-record"></p>
+                        <h3 id="current-blue-name"></h3>
+                        <h5 id="current-blue-teamname"></h5>
+                        <p id="current-blue-record"></p>
                         <hr>
-                        <p id="blue-flavortext"></p>
-                        <img id="blue-image" width="100%">
-                        <p class="hidden" id="blue-weightclass"></p>
+                        <p id="current-blue-flavortext"></p>
+                        <img id="current-blue-image" width="100%">
+                        <p class="hidden" id="current-blue-weightclass"></p>
                     </div>
                 </div>
                 <div class="col-2">
@@ -59,55 +50,87 @@
                         <p>&nbsp;</p>
                         <h1 class="text-center">VS</h1>
                     </div>
-                    <div id="weight-mismatch-main" class="row d-flex justify-content-center text-center hidden">
+                    <div id="current-mismatch" class="row d-flex mt-5 pt-5 pb-0 ms-1 me-1 justify-content-center text-center hidden alert alert-danger rounded-3">
                         <div id="weight-conflict">
-                            <i class="fa fa-exclamation-triangle warn-red" aria-hidden="true"></i>
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                         </div>
                         <p>&nbsp;</p>
-                        <p class="warn-red">WEIGHT MISMATCH</p>
+                        <p class="">WEIGHT MISMATCH</p>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="fightcard red" id="current-red">
-                        <h3 id="red-name"></h3>
-                        <h5 id="red-teamname"></h5>
-                        <p id="red-record"></p> 
+                        <h3 id="current-red-name"></h3>
+                        <h5 id="current-red-teamname"></h5>
+                        <p id="current-red-record"></p> 
                         <hr>
-                        <p id="red-flavortext"></p>
-                        <img id="red-image" width="100%">
-                        <p class="hidden" id="red-weightclass"></p>
+                        <p id="current-red-flavortext"></p>
+                        <img id="current-red-image" width="100%">
+                        <p class="hidden" id="current-red-weightclass"></p>
                     </div>
                 </div>
                 <div class="col-1">
                 </div>
             </div>
-            <div class="row text-center mb-3 mt-3">
-                <div class="col"><button class="btn btn-primary" id="shiftbutton"><i class="fa fa-lg fa-arrow-up"
-                            aria-hidden="true"></i></button></div>
+            <div class="row  mt-4 text-center">
+                <div class="col"><button class="btn btn-outline-primary" id="shiftbutton">Shift all</button></div>
             </div>
-            <div class="row">
-                <div class="col-1">
+            <div class="row p-3 mt-4 rounded-2 bg-body-secondary" id="next-robots">
+                <div class="col-1 mt-auto mb-auto">
+                    <span>Up Next</span>
                 </div>
                 <div class="col-4">
-                    <div class="fightcard blue" id="next-blue">
+                    <div class="fightcard blue small" id="next-blue">
                         <h4 id="next-blue-name"></h4>
+                        <span class="hidden"id=next-blue-weightclass></span>
                     </div>
                 </div>
                 <div class="col-2">
-                    <div class="not-fightcard"><h4 class="text-center invisible">vs</h4></div>
-                </div>
-                <div class="col-4">
-                    <div class="fightcard red" id="next-red">
-                        <h4 class="col" id="next-red-name"></h4>
+                    <div id="next-mismatch" class="alert alert-danger mt-auto mb-auto hidden">
+                        <i class="fa fa-lg fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span>&nbsp;CHECK WEIGHT</span>
                     </div>
                 </div>
-                <div class="col-1">
+                <div class="col-4">
+                    <div class="fightcard red small" id="next-red">
+                        <h4 class="col" id="next-red-name"></h4>
+                        <span class="hidden"id=next-red-weightclass></span>
+
+                    </div>
+                </div>
+                <div class="col-1 mt-auto mb-auto text-center">
+                    <button class="btn btn-success playbutton" id="play-next-match"><i class="fa fa-lg fa-play-circle"></i></button>
                 </div>
             </div>
-            <hr>
+            <div class="row p-3 mt-4 rounded-2 bg-body-secondary" id="standby-robots">
+                <div class="col-1 mt-auto mb-auto">
+                    <span>Standby</span>
+                </div>
+                <div class="col-4">
+                    <div class="fightcard blue small" id="standby-blue">
+                        <h4 id="standby-blue-name"></h4>
+                        <span class="hidden" id="standby-blue-weightclass"></span>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <div id="standby-mismatch" class="alert alert-danger mt-auto mb-auto hidden">
+                        <i class="fa fa-lg fa-exclamation-triangle" aria-hidden="true"></i>
+                        <span>&nbsp;CHECK WEIGHT</span>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="fightcard red small" id="standby-red">
+                        <h4 class="col" id="standby-red-name"></h4>
+                        <span class="hidden" id="standby-red-weightclass"></span>
+                    </div>
+                </div>
+                <div class="col-1 mt-auto mb-auto text-center">
+                    <button class="btn btn-success playbutton" id="play-standby-match"><i class="fa fa-lg fa-play-circle"></i></button>
+                </div>
+            </div>
         </div>
-        <div class="container">
-            <div class="row d-flex py-3 mb-2 flex-wrap justify-content-end">
+        <div class="container border-3 rounded-2 mt-4 border-primary p-2 ps-3 pe-3 bg-body-secondary">
+            <div class="row d-flex py-3 flex-wrap justify-content-end">
                 <h3 class="d-inline-flex w-auto mb-3 mb-md-0 me-md-auto">Special matches</h3>
                 <select class="form-select d-flex w-auto me-md-3" id="special-match-weightclass">
                     <option value="antweight">Antweight</option>

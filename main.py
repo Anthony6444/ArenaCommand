@@ -17,10 +17,10 @@ ch_cache_data = {}
 
 robots = load_persisted()
 
-robot_red: dict[Field, str] = EMPTY_ROBOT
-robot_blue: dict[Field, str] = EMPTY_ROBOT
-next_robot_red: dict[Field, str] = EMPTY_ROBOT
-next_robot_blue: dict[Field, str] = EMPTY_ROBOT
+queue: dict[Color, dict[QueuePosition, dict[Field, str]]] = {
+    Color.red: {pos: EMPTY_ROBOT for pos in QueuePosition},
+    Color.blue: {pos: EMPTY_ROBOT for pos in QueuePosition},
+}
 
 app = FastAPI(redoc_url="/redoc", openapi_tags=TAGS_META,
               swagger_ui_parameters={"deepLinking": False})
@@ -28,7 +28,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 print("Current IP address:", get_ip())
 
 app.title = "ArenaCommand"
-app.version = "1.3.0"
+app.version = "1.4.0"
 app.summary = "BattleBots Control software"
 
 
@@ -56,7 +56,7 @@ app.openapi = custom_openapi
 def challonge_cache(data_type: ChDataType | None = None):
     global ch_cache_last_updated, ch_cache_data
     # if challonge hasn't been updated in the past 30sec, update cached data
-    if datetime.datetime.now() - ch_cache_last_updated > datetime.timedelta(0, 30):
+    if datetime.datetime.now() - ch_cache_last_updated > datetime.timedelta(seconds=30):
         tournaments = challonge.tournaments.index()
         matches = challonge.matches.index(active_tournament["id"])
         participants = challonge.participants.index(active_tournament["id"])
@@ -81,7 +81,7 @@ def challonge_cache(data_type: ChDataType | None = None):
 
 
 # credentials loaded from sensitivedata.py
-challonge.set_credentials(CHALLONGE_USERNAME, CHALLONGE_API_KEY)
+challonge.set_credentials(get_challonge_username(), get_challonge_api_key())
 tournaments = challonge.tournaments.index()  # list tournaments to begin
 # start with the first tournament in account as the selected tournament
 active_tournament = tournaments[0]
@@ -181,46 +181,22 @@ def html_page(webpage: WebPage) -> HTMLResponse:
 @app.get("/api/v1/active/{queue_pos}/{color}/image", tags=["activerobot"])
 def get_robot_image_json(color: Color, queue_pos: QueuePosition, transform: ImageTransform | None = None, max_size: int | None = None) -> JSONResponse:
     """returns the stored image url for selected robot"""
-    if queue_pos == QueuePosition.current:
-        temp_red, temp_blue = robot_red, robot_blue
-    elif queue_pos == QueuePosition.next:
-        temp_red, temp_blue = next_robot_red, next_robot_blue
-    if color == Color.red:
-        id = temp_red[Field.id]
-    elif color == Color.blue:
-        id = temp_blue[Field.id]
+    id = queue[color][queue_pos][Field.id]
     return {"field": "imageurl", "text": f"http://{get_ip()}/api/v1/images/get/{id}"}
 
 
 @app.get("/api/v1/active/{queue_pos}/{color}/record", tags=["activerobot"])
 def get_robot_record_json(queue_pos: QueuePosition, color: Color) -> JSONResponse:
     """ returns the record (W-L-T) of the selected robot"""
-    if queue_pos == QueuePosition.current:
-        temp_red, temp_blue = robot_red, robot_blue
-    elif queue_pos == QueuePosition.next:
-        temp_red, temp_blue = next_robot_red, next_robot_blue
-    if color == Color.red:
-        id = temp_red[Field.id]
-    elif color == Color.blue:
-        id = temp_blue[Field.id]
-    # print("name")
-
+    id = queue[color][queue_pos][Field.id]
     text = get_robot_record_id(id)
-
     return {"field": Field.record, "text": text, "format": "W-L-T"}
 
 
 @app.get("/api/v1/active/{queue_pos}/{color}/{field}", tags=["activerobot"])
 def get_robot_field_json(color: Color, field: Field, queue_pos: QueuePosition) -> JSONResponse:
     """get other field of the current robot"""
-    if queue_pos == QueuePosition.current:
-        temp_red, temp_blue = robot_red, robot_blue
-    elif queue_pos == QueuePosition.next:
-        temp_red, temp_blue = next_robot_red, next_robot_blue
-    if color == Color.red:
-        return {"field": field, "text": temp_red[field]}
-    elif color == Color.blue:
-        return {"field": field, "text": temp_blue[field]}
+    return {"field": field, "text": queue[color][queue_pos][field]}
 
 
 @app.get("/api/v1/list/{weightclass}", tags=["robotlist"], deprecated=True,
@@ -244,42 +220,40 @@ async def get_robot_list(weightclass: Weightclass, sort: Field | None = Field.na
 
 
 @app.post("/api/v1/advance", tags=["utilities"])
-def advance_standby_robot():
-    """advance standby robots, both red and blue, to active slot"""
-    global robot_blue, robot_red, next_robot_blue, next_robot_red
-    robot_blue = next_robot_blue
-    robot_red = next_robot_red
-    next_robot_blue = EMPTY_ROBOT
-    next_robot_red = EMPTY_ROBOT
+def advance_standby_robot(advance_method: AdvanceMethod = AdvanceMethod.advance_all):
+    """advance robots dependent on `advance_method`"""
+    global queue
+    for color in Color:
+        if advance_method == AdvanceMethod.next_to_current:
+            queue[color][QueuePosition.current] = queue[color][QueuePosition.next]
+            queue[color][QueuePosition.next] = EMPTY_ROBOT
+        elif advance_method == AdvanceMethod.standby_to_current:
+            queue[color][QueuePosition.current] = queue[color][QueuePosition.standby]
+            queue[color][QueuePosition.standby] = EMPTY_ROBOT
+        else:
+            queue[color][QueuePosition.current] = queue[color][QueuePosition.next]
+            queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
+            queue[color][QueuePosition.standby] = EMPTY_ROBOT
 
 
 @app.post("/api/v1/set/{queue_pos}/{color}", tags=["activerobot"])
 def set_robot_by_name(queue_pos: QueuePosition, color: Color, robot_id: RobotId):
     """set active or next robot by it's id"""
-    global robot_blue, robot_red, next_robot_blue, next_robot_red
+    global queue
     new_robot = robots[robot_id.robot_id]
-    if queue_pos == QueuePosition.current:
-        if color == Color.blue:
-            robot_blue = new_robot
-        if color == Color.red:
-            robot_red = new_robot
-    elif queue_pos == QueuePosition.next:
-        if color == Color.blue:
-            next_robot_blue = new_robot
-        if color == Color.red:
-            next_robot_red = new_robot
+    queue[color][queue_pos] = new_robot
 
 
 @app.post("/api/v1/special/{type}/{weightclass}", tags=["utilities"])
 def start_special_match(type: SpecialMatchType, weightclass: Weightclass):
     """activate special match type"""
-    global robot_blue, robot_red
+    global queue
     if type == SpecialMatchType.grudge:
-        robot_red = grudge_match(weightclass)
-        robot_blue = grudge_match(weightclass)
+        queue[Color.red][QueuePosition.current] = grudge_match(weightclass)
+        queue[Color.blue][QueuePosition.current] = grudge_match(weightclass)
     elif type == SpecialMatchType.rumble:
-        robot_red = rumble(weightclass)
-        robot_blue = rumble(weightclass)
+        queue[Color.red][QueuePosition.current] = rumble(weightclass)
+        queue[Color.blue][QueuePosition.current] = rumble(weightclass)
 
 
 @app.get("/api/v1/images/get/{id}", tags=["images"], responses={200: {"content": {"image/png": {}}}}, response_class=Response)
@@ -433,7 +407,8 @@ def get_active_tournament_matches():
     return matches
 
 
-app.mount("/", StaticFiles(directory="icons"), name="icons")
+app.mount("/", StaticFiles(directory="./icons",
+          check_dir=True), name="icons")
 
 
 def return_image_from_id(image_name, transform: ImageTransform | None, max_size: int | None = None) -> Response:
