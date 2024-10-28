@@ -86,8 +86,68 @@ header {
   background-color: #d3434b;
 }
 
-#shiftbutton {
+#bot-list tr:hover {
+  cursor: pointer;
+}
+
+#bot-list tr td:nth-child(1) {
+  width: 2em;
+  position: relative;
+}
+
+#bot-list tr td:nth-child(1).ant::before {
+    --active-color: #025250;
+}
+#bot-list tr td:nth-child(1).beetle::before {
+    --active-color: #f9a003;
+}
+
+#bot-list tr td:nth-child(1)::before {
+  content: attr(data-wc);
+  font-size: 18pt;
+  font-weight: 800;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  --border-width: 2px;
+  text-align: center;
+  width: calc(35px + 2 * var(--border-width));
+  height: calc(35px + 2 * var(--border-width));
+  top: 0;
+  right: 0;
+  color: white;
+  background-size: 40px 40px;
+  background-color: var(--active-color);
+  position: absolute;
+  border: var(--border-width) solid var(--active-color);
+  border-radius: 6%;
+}
+
+.bot-list-scrollable {
+  height: 75vh;
+}
+
+#shift-all-button {
   padding: 1em 2em;
+}
+
+#bot-list-container {
+  height: 65vh;
+}
+
+.modal-body.with-pinned {
+  position: relative;
+  /* height: 70vh; */
+  padding-top: 60px; /* Space for pinned content */
+}
+
+.pinned-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* background-color: #fff; */
+  padding: 10px;
+  z-index: 10;
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
 }
 
 .playbutton {

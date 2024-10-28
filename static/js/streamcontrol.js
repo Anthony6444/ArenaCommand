@@ -14,8 +14,12 @@ var colors = [
     "red",
     "blue"
 ]
-var buttonPushedId = null;
+
+var robots = [];
+
+var selectedRobotId = null;
 var fightcardSelectedId = null;
+let currentFightcardRowIndex=-1;
 
 function getAllRobotDetails() { 
     for (k=0; k<colors.length; k++){    
@@ -45,32 +49,55 @@ function getAllRobotDetails() {
     }
  }
 
-function populateRobotList() {
+
+ function fetchRobotListFromServer() {
     $.get("/api/v1/list/all", success = function (result) {
         for (j = 0; j < result.length; j++) {
-            button = $("<div>", { "id": "card" + j, "class": "card selector-card m-2 clickable row", "data-robot-id": result[j]["id"]});
-            // console.log(result[j]["weightclass"])
-            if (result[j]["weightclass"].toLowerCase() == "antweight") {
-                button.html("<p class=\"no-padding\"><i class=\"fa fa-car\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
-                $("#ant-list").append(button);
-            } else if (result[j]["weightclass"].toLowerCase() == "beetleweight") {
-                button.html("<p class=\"no-padding\"><i class=\"fa fa-truck\" aria-hidden=\"true\"></i>&nbsp;" + result[j]["name"] + "</p>")
-                $("#beetle-list").append(button);
-            }
-            else {
-                console.log("ERROR: " + result[j]["name"]);
-            }
+            robots[j] = result[j];
+            // console.log(row);
             // console.log(button)
             // $("#beetle-list").append($("<button>", ))
             // button.text(result[j]["name"])
 
         }
-    })
+    });
+    console.log(robots);
+    populateRobotList(robots);
+ }
+
+function populateRobotList(robotArray = robots) {
+    $("#bot-list").html("");
+    for (i=0; i<robotArray.length; i++) {
+        row = $("<tr>", { "id": "row" + i, "class": "", "data-robot-id": robotArray[i]["id"], "tabindex": "0", "data-row-index": i});
+        char = robotArray[i]["weightclass"].charAt(0).toUpperCase();
+        row.html(`<td data-wc="${char}" class="${char == "A" ? "ant" : "beetle"}"></td><td>${robotArray[i]["name"]}</td><td>${robotArray[i]["teamname"]}</td>`);
+        $("#bot-list").append(row);
+    }
 }
+
+function populateRobotListSortOnSearchTerm(searchTerm) {
+    const options = {
+        includeScore: true,          // Include score to sort by similarity
+        threshold: 0.3,              // Fuzzy matching sensitivity
+        keys: ["name", "teamname"]               // Only search within the "name" property
+    };
+
+    // Initialize Fuse with the array and options
+    const fuse = new Fuse(robots, options);
+
+    // Perform the fuzzy search
+    const results = fuse.search(searchTerm);
+    // Extract sorted array of objects based on search term
+    const sortedArray = results.map(result => result.item);
+
+    console.log(sortedArray);
+    populateRobotList(sortedArray);
+}
+
 function waitForRobotSelectedUpdateFightcard() {
-    if (buttonPushedId != null) {
-        // console.log(buttonPushedId, ";", fightcardSelectedId, ";")
-        robot_id = $("#" + buttonPushedId).attr("data-robot-id");
+    if (selectedRobotId != null) {
+        console.log(selectedRobotId, ";", fightcardSelectedId, ";")
+        robot_id= selectedRobotId;
         if (fightcardSelectedId == "current-blue") {
             $.jpost("/api/v1/set/current/blue", data = { "robot_id": robot_id })
         }
@@ -92,11 +119,11 @@ function waitForRobotSelectedUpdateFightcard() {
         else {
             console.log("invalid fightcard selected")
         }
-        buttonPushedId = null;
+        selectedRobotId = null;
         fightcardSelectedId = null;
         updateRobotDetails();
     } else {
-        setTimeout(waitForRobotSelectedUpdateFightcard, 250)
+        setTimeout(waitForRobotSelectedUpdateFightcard, 350)
     }
 }
 $(document).on("click", ".fightcard", function (event) {
@@ -106,29 +133,26 @@ $(document).on("click", ".fightcard", function (event) {
     }
     // console.log(id);
     fightcardSelectedId = id;
-    openOverlay();
+    $("#botselectormodal").modal("toggle");
     waitForRobotSelectedUpdateFightcard();
 });
-$(document).on("click", ".clickable", function (event) {
-    id = event.target.id.toString();
-    if (event.target.tagName == "P") {
-        id = event.target.parentElement.id.toString();
-    }
-    else if (event.target.tagName == "I") {
-        id = event.target.parentElement.parentElement.id.toString();
-    }
-    // console.log(id);
-    buttonPushedId = id;
-    closeOverlay();
-});
-$(document).on("click", ".fightcard", function (event) {
-    openOverlay();
-});
-$("#shiftbutton").on("click", function () {
-    $.post("/api/v1/advance", success = function () {
+$("#shift-all-button").on("click", function () {
+    $.post("/api/v1/queue/advance", success = function () {
         updateRobotDetails();
     })
-})
+});
+
+$("#skip-next-match").on("click", function () {
+    $.post("/api/v1/queue/remove/next", success = function () {
+        updateRobotDetails();
+    })
+});
+$("#skip-standby-match").on("click", function () {
+    $.post("/api/v1/queue/remove/standby", success = function () {
+        updateRobotDetails();
+    })
+});
+
 $("#grudge-button").on("click", function(event) {
     $.post("/api/v1/special/grudge/"+$("#special-match-weightclass").val());
     updateRobotDetails();
@@ -137,13 +161,13 @@ $("#rumble-button").on("click", function(event) {
     $.post("/api/v1/special/rumble/"+$("#special-match-weightclass").val());
     updateRobotDetails();
 });
-function openOverlay() {
-    document.getElementById('bot-selector').classList.add('active');
-}
 
-function closeOverlay() {
-    document.getElementById('bot-selector').classList.remove('active');
-}
+$("#botselectormodal").on("shown.bs.modal", () => {
+    $("#search-term").focus();
+    $("#search-term").val("");
+    populateRobotList(robots);
+})
+
 function updateRobotDetails() {
     getAllRobotDetails(); 
     setTimeout(
@@ -152,7 +176,7 @@ function updateRobotDetails() {
                 if ($(`#${positions[i]}-blue-weightclass`).text() == $(`#${positions[i]}-red-weightclass`).text() 
                         || $(`#${positions[i]}-blue-weightclass`).text() == "unset"
                         || $(`#${positions[i]}-red-weightclass`).text() == "unset") {
-                    console.log(`#${positions[i]}-mismatch`)
+                    // console.log(`#${positions[i]}-mismatch`)
                     $(`#${positions[i]}-mismatch`).addClass("hidden");
                 } else {
                     $(`#${positions[i]}-mismatch`).removeClass("hidden");
@@ -162,7 +186,51 @@ function updateRobotDetails() {
     }
 updateRobotDetails();
 // setInterval(updateRobotDetails, 10000)
-populateRobotList();
+fetchRobotListFromServer();
+
+$("#bot-list").on("keydown", function(ev) {
+    if (ev.key === "ArrowDown" || ev.key === "ArrowUp") {
+        var items = $("#bot-list tr")
+        ev.preventDefault();
+        if (currentFightcardRowIndex == 0 && ev.key === "ArrowUp") {
+            setTimeout(() => {$("#search-term").focus()}, 30); // wacky i know but apparently the timeout is necessary
+        } else if (currentFightcardRowIndex == (items.length - 1) && ev.key === "ArrowDown") {
+            // nothing
+        } else {
+            currentFightcardRowIndex = currentFightcardRowIndex + ( ev.key === "ArrowDown" ? 1 : -1 );
+        }
+        items.eq(currentFightcardRowIndex).focus();
+    } else if (ev.key == "Enter") {
+        selectedRobotId = $(ev.target).attr("data-robot-id");
+        $("#botselectormodal").modal("toggle");
+    }
+});
+
+$("#bot-list").on("click", function(ev) {
+    // $(this).closest("tr").focus();
+    currentFightcardRowIndex = parseInt($(ev.target).closest("tr").attr("data-row-index"), 10);
+    setTimeout(() => {
+        $("#bot-list tr").eq(currentFightcardRowIndex).focus();
+    }, 30);
+    selectedRobotId = $(ev.target).closest("tr").attr("data-robot-id");
+    $("#botselectormodal").modal("toggle");
+})
+
+$("#search-term").on("keydown", (ev) => {
+    if (ev.key === "ArrowDown") {
+        ev.preventDefault();
+        currentFightcardRowIndex = 0;
+        $("#bot-list tr").eq(0).focus();
+    } else if ($("#search-term").val() == "") {
+        populateRobotList(robots);
+    }else if (ev.key == "Enter") {
+        selectedRobotId = $("#bot-list tr").eq(0).attr("data-robot-id");
+        $("#botselectormodal").modal("toggle");
+    } else {
+        populateRobotListSortOnSearchTerm($("#search-term").val());
+    }
+})
+
 $.extend({
     jpost: function (url, body) {
         return $.ajax({
