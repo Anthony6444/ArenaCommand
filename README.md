@@ -1,12 +1,13 @@
 ![ArenaCommand Logo](/banner_transparent.png)
 
-**ArenaCommand** is a battlebot stream control software built for [RSL](https://robotsmashingleague.com). It provides a local webserver, which can be accessed by OBS to show text and image elements on screen for videos and streams.
-With challonge integration for keeping track of records, probably, at some point, eventually.
+**ArenaCommand** is a battlebot stream control software built for [RSL](https://robotsmashingleague.com). It provides a local webserver, 
+which can be accessed by OBS to show text and image elements on screen for videos and streams. With challonge integration for keeping
+track of records, probably, at some point, eventually.
 
 ## Features
 
 - Local Webserver
-- Challonge Integration **In progress!*
+- Challonge Integration
 
 ## Installation
 
@@ -27,4 +28,41 @@ pip install -r requirements.txt
 
 ## Running the program
 
-The server can be started by running the command `uvicorn main:app --port 80 --host "0.0.0.0"` from the root directory of the repo with the virtual environment active. This will start a webserver running on the local machine and accessible to anyone on your local network.
+The server can be started by running the command `uvicorn main:app --port 80 --host "0.0.0.0"` from the root directory of the repo with the
+virtual environment active. This will start a webserver running on the local machine and accessible to anyone on your local network.
+
+## Using the program
+
+After starting the server, the config pages can be accessed by visiting `http://localhost/` in a browser on the local machine, or at
+`http://{IP_ADDRESS}/` from another computer on the same network. The current IP is printed to the terminal at program start. Tooltips
+are avilable throughout the program to explain things, but to get started, the main pages you have to worry about are **Stream Control**,
+**Robot Editor** and **Image Intake**. 
+
+
+### Robot Editor
+
+This is where the initial setup of the program happens. First, if desired, clear the robot list by pushing the big red button that says 
+"Clear List". Then, either add each robot manually by pushing the "Add robot" button, or Load a list of robots from a `.csv` file. Your `.csv` 
+file should contain at least four columns, one for the name, one for the team name, one for the weightclass, and one for the flavor text. Previously
+Created robots can be edited by clicking the edit button next to them, and can be deleted from within the edit dialog. 
+
+### Image Intake
+
+Here is where the robots assigned a picture. This picture can be either taken individually and uploaded, or can be taken from a webcam attached to the
+computer. Any recent android device can be connected to the computer in USB Webcam Mode, for more information, please visit 
+[this page](https://support.google.com/pixelcamera/answer/14274129). After connecting, select the correct video device, click on any robot on the
+page, and push "take photo". Review the photo you took, and if necessary cancel and retake. Push "Use updated", and your changes will be saved. To 
+upload, once you click on a robot, choose the "upload image" tab and select your file. 
+
+### Stream Control
+
+After everything is set up on the other pages, this is the page where most of the interaction will b. To use this, click on the red and blue boxes
+to open the robotselector. once a robot is selected, either by clicking or by searching and using the arrow keys, that robot will be put into the
+slot you clicked on to open the editor. The search function matches both the team name and the robot name, and robots are differentiated in color by
+weightclass.
+
+## Additional Note
+
+In order to use challonge integration, `sensitivedata.py` must be edited. Change the values of `CHALLONGE_USERNAME` and `CHALLONGE_API_KEY` to your values.
+Once these values are set, on the settings page, there will be a dropdown of all the tournaments created by the user you have provided. Robot records will 
+be pulled from the selected challonge tournament by matching names of robots, so make sure your names match!
