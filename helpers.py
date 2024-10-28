@@ -165,11 +165,6 @@ class ChCacheAction(StrEnum):
     refresh = auto()
 
 
-class AdvanceMethod(StrEnum):
-    next_to_current = auto()
-    standby_to_current = auto()
-    advance_all = auto()
-
 
 def get_header(webpage: WebPage):
     with open("./static/header.html", "r") as f:

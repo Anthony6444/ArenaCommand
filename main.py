@@ -219,21 +219,25 @@ async def get_robot_list(weightclass: Weightclass, sort: Field | None = Field.na
     return sort_robots_by_field(returnable, sort, reverse)
 
 
-@app.post("/api/v1/advance", tags=["utilities"])
-def advance_standby_robot(advance_method: AdvanceMethod = AdvanceMethod.advance_all):
-    """advance robots dependent on `advance_method`"""
+@app.post("/api/v1/queue/advance", tags=["utilities"])
+def advance_standby_robot():
+    """advance robots in queue"""
     global queue
     for color in Color:
-        if advance_method == AdvanceMethod.next_to_current:
-            queue[color][QueuePosition.current] = queue[color][QueuePosition.next]
-            queue[color][QueuePosition.next] = EMPTY_ROBOT
-        elif advance_method == AdvanceMethod.standby_to_current:
-            queue[color][QueuePosition.current] = queue[color][QueuePosition.standby]
-            queue[color][QueuePosition.standby] = EMPTY_ROBOT
-        else:
-            queue[color][QueuePosition.current] = queue[color][QueuePosition.next]
+        queue[color][QueuePosition.current] = queue[color][QueuePosition.next]
+        queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
+        queue[color][QueuePosition.standby] = EMPTY_ROBOT
+
+
+@app.post("/api/v1/queue/remove/{queue_pos}", tags=["utilities"])
+def remove_from_queue(queue_pos: QueuePosition):
+    global queue
+    for color in Color:
+        if queue_pos == QueuePosition.current:
+            return
+        elif queue_pos == QueuePosition.next:
             queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
-            queue[color][QueuePosition.standby] = EMPTY_ROBOT
+        queue[color][QueuePosition.standby] = EMPTY_ROBOT
 
 
 @app.post("/api/v1/set/{queue_pos}/{color}", tags=["activerobot"])
