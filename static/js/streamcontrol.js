@@ -79,6 +79,7 @@ function populateRobotListSortOnSearchTerm(searchTerm) {
     const options = {
         includeScore: true,          // Include score to sort by similarity
         threshold: 0.3,              // Fuzzy matching sensitivity
+        ignoreLocation: true,
         keys: ["name", "teamname"]               // Only search within the "name" property
     };
 
