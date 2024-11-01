@@ -61,7 +61,7 @@ to open the robotselector. once a robot is selected, either by clicking or by se
 slot you clicked on to open the editor. The search function matches both the team name and the robot name, and robots are differentiated in color by
 weightclass.
 
-## Additional Note
+## Additional note on usage
 
 In order to use challonge integration, `sensitivedata.py` must be edited. Change the values of `CHALLONGE_USERNAME` and `CHALLONGE_API_KEY` to your values.
 Once these values are set, on the settings page, there will be a dropdown of all the tournaments created by the user you have provided. Robot records will 
