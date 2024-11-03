@@ -488,3 +488,15 @@ h1.error-404 {
   width: fit-content;
   display: inline-flex;
 }
+
+*[data-note]::after {
+  content: attr(data-note);
+  padding-left: 0.4em;
+  font-size: smaller;
+  font-style: italic;
+  opacity: .65;
+}
+
+#enabled-weightclasses {
+  width: max-content;
+}

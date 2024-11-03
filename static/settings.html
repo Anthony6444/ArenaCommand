@@ -19,18 +19,22 @@
     <body class="d-flex flex-column h-100">
         {header}
         <div class="container flex-shrink-0">
-            <h2 class="border-bottom mb-4 pb-2">Challonge settings</h2>
+            <h2 class="border-bottom mt-4 mb-4 pb-2">Program Settings</h2>
             <div class="row d-flex justify-content-end align-items-baseline m-2">
-                <h5 class="w-auto py-2 mb-0 pb-0 mt-auto me-md-auto">Challonge API key</h5>
+                <h5 class="w-auto py-2 mb-0 pb-0 mt-auto me-md-auto" data-note="(disabled)">Challonge API key</h5>
                 <input disabled type="text" id="ch-key-box" class="form-control d-inline me-2">
-                <button disabled class=" btn btn-light w-auto mt-auto"id="update-ch-key-button"><span class="">Update</span><i class="fa fa-lg fa-check hidden"></i></button>
+                <button disabled class=" btn btn-light w-auto mt-auto" id="update-ch-key-button"><span
+                        class>Update</span><i class="fa fa-lg fa-check hidden"></i></button>
             </div>
-            <h2 class="border-bottom mt-4 mb-4 pb-2">Tournament settings</h2>
+            <div class="row justify-content-between align-items-baseline m-2">
+                <h5 class="w-auto py-2 mb-0 pb-0 mt-auto me-md-auto" >Weightclasses</h5>
+                <div class="btn-group d-inline pe-0" role="group" id="enabled-weightclasses"></div>
+            </div>
             <div class="row d-flex justify-content-between align-items-baseline m-2">
                 <h5 class="w-auto py-2 mb-0 pb-0 mt-auto">Active tournament ID</h5>
                 <select id="active-tournament-id" class="form-select w-50 d-inline"></select>
             </div>
-            </div>
+            <div id="new-t-selector"></div>
         </div>
         {footer}
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"

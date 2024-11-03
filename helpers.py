@@ -165,6 +165,10 @@ class ChCacheAction(StrEnum):
     refresh = auto()
 
 
+class ChTournamentType(StrEnum):
+    swiss = auto()
+    final = auto()
+
 
 def get_header(webpage: WebPage):
     with open("./static/header.html", "r") as f:

@@ -15,6 +15,8 @@ from sensitivedata import *
 ch_cache_last_updated = datetime.datetime(1970, 1, 1)
 ch_cache_data = {}
 
+active_weightclasses = [Weightclass.antweight, Weightclass.beetleweight]
+
 robots = load_persisted()
 
 queue: dict[Color, dict[QueuePosition, dict[Field, str]]] = {
@@ -371,6 +373,27 @@ async def clear_robot_list():
     global robots
     persist({})
     robots = load_persisted()
+
+
+@app.get("/api/v1/weightclasses/list", tags=["weightclasses"])
+async def get_all_available_weightclasses() -> list[dict[str, Weightclass | bool]]:
+    return [{"weightclass": wc, "active": wc in active_weightclasses} for wc in Weightclass if wc != Weightclass.all and wc != Weightclass.unset]
+
+
+@app.post("/api/v1/weightclasses/enable/{weightclass}", tags=["weightclasses"])
+async def enable_weightclasses(weightclass: Weightclass):
+    global active_weightclasses
+    active_weightclasses += [weightclass]
+
+
+@app.post("/api/v1/weightclasses/disable/{weightclass}", tags=["weightclasses"])
+async def disable_weightclass(weightclass: Weightclass):
+    global active_weightclasses
+    if weightclass in active_weightclasses:
+        try:
+            active_weightclasses.remove(weightclass)
+        except ValueError:
+            pass
 
 
 @app.get("/api/v1/tournaments/list", tags=["tournaments"])
