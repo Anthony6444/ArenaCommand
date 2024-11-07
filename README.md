@@ -35,16 +35,16 @@ virtual environment active. This will start a webserver running on the local mac
 
 After starting the server, the config pages can be accessed by visiting `http://localhost/` in a browser on the local machine, or at
 `http://{IP_ADDRESS}/` from another computer on the same network. The current IP is printed to the terminal at program start. Tooltips
-are avilable throughout the program to explain things, but to get started, the main pages you have to worry about are **Stream Control**,
+are available throughout the program to explain things, but to get started, the main pages you have to worry about are **Stream Control**,
 **Robot Editor** and **Image Intake**. 
 
 
 ### Robot Editor
 
 This is where the initial setup of the program happens. First, if desired, clear the robot list by pushing the big red button that says 
-"Clear List". Then, either add each robot manually by pushing the "Add robot" button, or Load a list of robots from a `.csv` file. Your `.csv` 
-file should contain at least four columns, one for the name, one for the team name, one for the weightclass, and one for the flavor text. Previously
-Created robots can be edited by clicking the edit button next to them, and can be deleted from within the edit dialog. 
+"Clear List". Then, either add each robot manually by pushing the "Add robot" button, or load a list of robots from a `.csv` file. Your `.csv` 
+file should contain at least four columns, one for the name, one for the team name, one for the weightclass, and one for the flavor text. Column headers are optional. Previously
+created robots can be edited by clicking the edit button next to them, and can be deleted from within the edit dialog. 
 
 ### Image Intake
 
@@ -54,15 +54,18 @@ computer. Any recent android device can be connected to the computer in USB Webc
 page, and push "take photo". Review the photo you took, and if necessary cancel and retake. Push "Use updated", and your changes will be saved. To 
 upload, once you click on a robot, choose the "upload image" tab and select your file. 
 
+> [!NOTE]
+> An alpha version of an android app to handle some of these functions is available at `imageloader.apk` in the root directory of this project. 
+
 ### Stream Control
 
-After everything is set up on the other pages, this is the page where most of the interaction will b. To use this, click on the red and blue boxes
-to open the robotselector. once a robot is selected, either by clicking or by searching and using the arrow keys, that robot will be put into the
+After everything is set up on the other pages, this is the page where most of the interaction will be. To use this, click on the red and blue boxes
+to open the robot selector. once a robot is selected, either by clicking or by searching and using the arrow keys, that robot will be put into the
 slot you clicked on to open the editor. The search function matches both the team name and the robot name, and robots are differentiated in color by
 weightclass.
 
 ## Additional note on usage
 
-In order to use challonge integration, `sensitivedata.py` must be edited. Change the values of `CHALLONGE_USERNAME` and `CHALLONGE_API_KEY` to your values.
+In order to use Challonge integration, `sensitivedata.py` must be edited. Change the values of `CHALLONGE_USERNAME` and `CHALLONGE_API_KEY` to your values.
 Once these values are set, on the settings page, there will be a dropdown of all the tournaments created by the user you have provided. Robot records will 
-be pulled from the selected challonge tournament by matching names of robots, so make sure your names match!
+be pulled from the selected Challonge tournament by matching names of robots, so make sure your names match!
