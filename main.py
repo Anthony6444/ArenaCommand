@@ -289,7 +289,7 @@ async def handle_image_save(id, request: Request):
         persist(robots)
     else:
         raise TypeError(
-            f"File type{form_data["imgBase64"].split[";"][0].split(":")[-1]} not supported")
+            f"File type {form_data["imgBase64"].split(";")[0].split(":")[-1]} not supported")
 
 
 @app.post("/api/v1/robots/edit/{id}", tags=["robot"])
