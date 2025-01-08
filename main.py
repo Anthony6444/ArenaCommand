@@ -226,7 +226,9 @@ def advance_standby_robot():
     for color in Color:
         queue[color][QueuePosition.current] = queue[color][QueuePosition.next]
         queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
-        queue[color][QueuePosition.standby] = EMPTY_ROBOT
+        queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
+        queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
+        queue[color][QueuePosition.extra2] = EMPTY_ROBOT
 
 
 @app.post("/api/v1/queue/remove/{queue_pos}", tags=["utilities"])
@@ -290,6 +292,9 @@ async def handle_image_save(id, request: Request):
     else:
         raise TypeError(
             f"File type {form_data["imgBase64"].split(";")[0].split(":")[-1]} not supported")
+
+# @app.post("/api/v2/images/save/{id}",tags=["images"])
+# async def handle_image_json_save(id: str, ):
 
 
 @app.post("/api/v1/robots/edit/{id}", tags=["robot"])

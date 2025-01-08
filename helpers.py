@@ -95,6 +95,8 @@ class QueuePosition(StrEnum):
     current = auto()
     next = auto()
     standby = auto()
+    extra1 = auto()
+    extra2 = auto()
 
 
 class Color(StrEnum):

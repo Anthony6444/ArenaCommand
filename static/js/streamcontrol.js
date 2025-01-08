@@ -8,7 +8,9 @@ var fields = [
 var positions = [
     "current",
     "next",
-    "standby"
+    "standby",
+    "extra1",
+    "extra2"
 ]
 var colors = [
     "red",
@@ -116,6 +118,18 @@ function waitForRobotSelectedUpdateFightcard() {
         }
         else if (fightcardSelectedId == "standby-red") {
             $.jpost("/api/v1/set/standby/red", data = { "robot_id": robot_id })
+        }
+        else if (fightcardSelectedId == "extra1-blue") {
+            $.jpost("/api/v1/set/extra1/blue", data = { "robot_id": robot_id })
+        }
+        else if (fightcardSelectedId == "extra1-red") {
+            $.jpost("/api/v1/set/extra1/red", data = { "robot_id": robot_id })
+        }
+        else if (fightcardSelectedId == "extra2-blue") {
+            $.jpost("/api/v1/set/extra2/blue", data = { "robot_id": robot_id })
+        }
+        else if (fightcardSelectedId == "extra2-red") {
+            $.jpost("/api/v1/set/extra2/red", data = { "robot_id": robot_id })
         }
         else {
             console.log("invalid fightcard selected")
