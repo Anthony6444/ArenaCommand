@@ -239,7 +239,14 @@ def remove_from_queue(queue_pos: QueuePosition):
             return
         elif queue_pos == QueuePosition.next:
             queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
-        queue[color][QueuePosition.standby] = EMPTY_ROBOT
+            queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
+            queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
+        elif queue_pos == QueuePosition.standby:
+            queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
+            queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
+        elif queue_pos == QueuePosition.extra1:
+            queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
+        queue[color][QueuePosition.extra2] = EMPTY_ROBOT
 
 
 @app.post("/api/v1/set/{queue_pos}/{color}", tags=["activerobot"])

@@ -167,6 +167,16 @@ $("#skip-standby-match").on("click", function () {
         updateRobotDetails();
     })
 });
+$("#skip-extra1-match").on("click", function () {
+    $.post("/api/v1/queue/remove/extra1", success = function () {
+        updateRobotDetails();
+    })
+});
+$("#skip-extra2-match").on("click", function () {
+    $.post("/api/v1/queue/remove/extra2", success = function () {
+        updateRobotDetails();
+    })
+});
 
 $("#grudge-button").on("click", function(event) {
     $.post("/api/v1/special/grudge/"+$("#special-match-weightclass").val());
