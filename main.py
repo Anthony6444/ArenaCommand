@@ -28,7 +28,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 print("Current IP address:", get_ip())
 
 app.title = "ArenaCommand"
-app.version = "1.6.0"
+app.version = "1.7.0"
 app.summary = "BattleBots Control software"
 
 
