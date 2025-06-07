@@ -123,6 +123,7 @@ class Weightclass(StrEnum):
     mantisweight = auto()
     hobbyweight = auto()
     featherweight = auto()
+    plastic_ant = auto()
     unset = auto()
     all = auto()
 
@@ -165,7 +166,6 @@ class ChDataType(StrEnum):
 class ChCacheAction(StrEnum):
     read = auto()
     refresh = auto()
-
 
 
 def get_header(webpage: WebPage):
