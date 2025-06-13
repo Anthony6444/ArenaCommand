@@ -228,11 +228,15 @@ def advance_standby_robot():
         queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
         queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
         queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
-        queue[color][QueuePosition.extra2] = EMPTY_ROBOT
+        queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
+        queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
+        queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
+        queue[color][QueuePosition.extra5] = EMPTY_ROBOT
 
 
 @app.post("/api/v1/queue/remove/{queue_pos}", tags=["utilities"])
 def remove_from_queue(queue_pos: QueuePosition):
+    """Remove a match from the queue and shift remaining matches up"""
     global queue
     for color in Color:
         if queue_pos == QueuePosition.current:
@@ -241,12 +245,37 @@ def remove_from_queue(queue_pos: QueuePosition):
             queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
             queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
             queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
+            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
+            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
+            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
+            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.standby:
             queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
             queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
+            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
+            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
+            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
+            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.extra1:
             queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
-        queue[color][QueuePosition.extra2] = EMPTY_ROBOT
+            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
+            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
+            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
+            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+        elif queue_pos == QueuePosition.extra2:
+            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
+            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
+            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
+            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+        elif queue_pos == QueuePosition.extra3:
+            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
+            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
+            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+        elif queue_pos == QueuePosition.extra4:
+            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
+            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+        elif queue_pos == QueuePosition.extra5:
+            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
 
 
 @app.post("/api/v1/set/{queue_pos}/{color}", tags=["activerobot"])
@@ -314,6 +343,11 @@ async def edit_robot(id: str, request: Request):
         robots[id][Field.teamname] = json["teamname"]
         robots[id][Field.weightclass] = str(json["weightclass"]).lower()
         robots[id][Field.flavortext] = json["flavortext"]
+        robots[id][Field.rank] = json["rank"]
+        robots[id][Field.elo] = json["elo"]
+        robots[id][Field.last_tournament] = json["last_tournament"]
+        robots[id][Field.record_career] = json["record_career"]
+        robots[id][Field.record_year] = json["record_year"]
         # print(robots[<>[id]])
     persist(robots)
 
@@ -335,6 +369,11 @@ async def add_robot(robot: NewRobot):
         Field.weightclass: robot.weightclass,
         Field.flavortext: flavortext,
         Field.imagestatus: ImageStatus.ok if image_exists(id) else ImageStatus.error,
+        Field.rank: robot.rank,
+        Field.elo: robot.elo,
+        Field.last_tournament: robot.last_tournament,
+        Field.record_career: robot.record_career,
+        Field.record_year: robot.record_year,
     }})
     persist(robots)
     return robots[id]
@@ -373,6 +412,11 @@ async def replace_robot_list(mode: RobotListMode, request: Request):
             Field.weightclass: Weightclass[robot[data["key"]["weightclass"]].strip().lower()],
             Field.flavortext: flavortext,
             Field.imagestatus: ImageStatus.ok if image_exists(id) else ImageStatus.error,
+            Field.rank: robot[data["key"]["rank"]].strip(),
+            Field.elo: robot[data["key"]["elo"]].strip(),
+            Field.last_tournament: robot[data["key"]["last_tournament"]].strip(),
+            Field.record_career: robot[data["key"]["record_career"]].strip(),
+            Field.record_year: robot[data["key"]["record_year"]].strip(),
         }
     # print(robots)
     persist(robots)

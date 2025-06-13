@@ -97,6 +97,9 @@ class QueuePosition(StrEnum):
     standby = auto()
     extra1 = auto()
     extra2 = auto()
+    extra3 = auto()
+    extra4 = auto()
+    extra5 = auto()
 
 
 class Color(StrEnum):
@@ -114,6 +117,11 @@ class Field(StrEnum):
     imagestatus = auto()
     existsinchallonge = auto()
     all = auto()
+    rank = auto()
+    elo = auto()
+    last_tournament = auto()
+    record_career = auto()
+    record_year = auto()
 
 
 class Weightclass(StrEnum):
@@ -133,6 +141,11 @@ class NewRobot(BaseModel):
     teamname: str
     flavortext: str
     weightclass: Weightclass
+    rank: str = "na"
+    elo: str = "na"
+    last_tournament: str = ""
+    record_career: str = "0-0"
+    record_year: str = "0-0"
 
 
 class ImageStatus(StrEnum):
@@ -212,6 +225,11 @@ EMPTY_ROBOT: dict[Field, str | Weightclass | ImageStatus] = {
     Field.weightclass: Weightclass.unset,
     Field.flavortext: "",
     Field.imagestatus: ImageStatus.error,
+    Field.rank: "na",
+    Field.elo: "na",
+    Field.last_tournament: "",
+    Field.record_career: "0-0",
+    Field.record_year: "0-0",
 }
 
 DELETED_ROBOT = {
@@ -221,6 +239,11 @@ DELETED_ROBOT = {
     Field.weightclass: Weightclass.unset,
     Field.flavortext: "DELETED",
     Field.imagestatus: ImageStatus.error,
+    Field.rank: "DELETED",
+    Field.elo: "DELETED",
+    Field.last_tournament: "DELETED",
+    Field.record_career: "DELETED",
+    Field.record_year: "DELETED",
 }
 
 
@@ -232,6 +255,11 @@ def grudge_match(weightclass: Weightclass) -> dict[Field, str | Weightclass | Im
         Field.weightclass: weightclass,
         Field.flavortext: "",
         Field.imagestatus: ImageStatus.error,
+        Field.rank: "",
+        Field.elo: "",
+        Field.last_tournament: "",
+        Field.record_career: "",
+        Field.record_year: "",
     }
 
 
@@ -243,6 +271,11 @@ def rumble(weightclass: Weightclass) -> dict[Field, str | Weightclass | ImageSta
         Field.weightclass: weightclass,
         Field.flavortext: "",
         Field.imagestatus: ImageStatus.error,
+        Field.rank: "",
+        Field.elo: "",
+        Field.last_tournament: "",
+        Field.record_career: "",
+        Field.record_year: "",
     }
 
 

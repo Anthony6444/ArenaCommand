@@ -42,6 +42,11 @@ $(document).on("click", ".edit-button", function (event) {
     $("#form-team-name").val($("#" + tr.id + "-team-name").text().trim());
     $("#form-flavortext").val($("#" + tr.id + "-flavortext").text().trim());
     $("#form-weightclass").val($("#" + tr.id + "-weightclass").text().trim());
+    $("#form-rank").val($("#" + tr.id + "-rank").text().trim());
+    $("#form-elo").val($("#" + tr.id + "-elo").text().trim());
+    $("#form-last-tournament").val($("#" + tr.id + "-last-tournament").text().trim());
+    $("#form-record-career").val($("#" + tr.id + "-record-career").text().trim());
+    $("#form-record-year").val($("#" + tr.id + "-record-year").text().trim());
     $("#form-id").val($("#" + tr.id + "-id").text().trim())
 })
 function populateRobotEditableList() {
@@ -58,6 +63,11 @@ function populateRobotEditableList() {
                     .replaceAll("{weightclass}", result[i]["weightclass"].toUpperCase())
                     .replaceAll("{flavortext}", result[i]["flavortext"])
                     .replaceAll("{record}", result[i]["record"])
+                    .replaceAll("{rank}", result[i]["rank"])
+                    .replaceAll("{elo}", result[i]["elo"])
+                    .replaceAll("{last_tournament}", result[i]["last_tournament"])
+                    .replaceAll("{record_career}", result[i]["record_career"])
+                    .replaceAll("{record_year}", result[i]["record_year"])
                 );
                 // console.log(this_robot.html());
                 if (result[i]["imagestatus"] == "ok") {
@@ -130,6 +140,11 @@ $("#csv-replace-list").click(function (event) {
                 "team_name": csvdata[0].indexOf($("#select-team-name").val()),
                 "weightclass": csvdata[0].indexOf($("#select-weightclass").val()),
                 "flavortext": csvdata[0].indexOf($("#select-flavortext").val()),
+                "rank": csvdata[0].indexOf($("#select-rank").val()),
+                "elo": csvdata[0].indexOf($("#select-elo").val()),
+                "last_tournament": csvdata[0].indexOf($("#select-last-tournament").val()),
+                "record_career": csvdata[0].indexOf($("#select-career-record").val()),
+                "record_year": csvdata[0].indexOf($("#select-year-record").val()),
             };
             send_data["content"] = csvdata;
             console.log(send_data)
@@ -160,6 +175,11 @@ $("#edit-save-robot").click(function (event) {
             teamname: $("#form-team-name").val(),
             flavortext: $("#form-flavortext").val(),
             weightclass: $("#form-weightclass").val(),
+            rank: $("#form-rank").val(),
+            elo: $("#form-elo").val(),
+            last_tournament: $("#form-last-tournament").val(),
+            record_career: $("#form-record-career").val(),
+            record_year: $("#form-record-year").val(),
         })
     });
     $("#edit-robot-modal").modal("toggle");
@@ -177,6 +197,11 @@ $("#new-save-robot").click(function (event) {
             teamname: $("#new-form-team-name").val(),
             flavortext: $("#new-form-flavortext").val(),
             weightclass: $("#new-form-weightclass").val(),
+            rank: $("#new-form-rank").val(),
+            elo: $("#new-form-elo").val(),
+            last_tournament: $("#new-form-last-tournament").val(),
+            record_career: $("#new-form-record-career").val(),
+            record_year: $("#new-form-record-year").val(),
         })
     });
     $("#new-robot-modal").modal("toggle");
