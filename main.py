@@ -22,8 +22,11 @@ queue: dict[Color, dict[QueuePosition, dict[Field, str]]] = {
     Color.blue: {pos: EMPTY_ROBOT for pos in QueuePosition},
 }
 
-app = FastAPI(redoc_url="/redoc", openapi_tags=TAGS_META,
-              swagger_ui_parameters={"deepLinking": False})
+app = FastAPI(
+    redoc_url="/redoc",
+    openapi_tags=TAGS_META,
+    swagger_ui_parameters={"deepLinking": False},
+)
 app.mount("/static", StaticFiles(directory="static"), name="static")
 print("Current IP address:", get_ip())
 
@@ -33,6 +36,10 @@ app.summary = "BattleBots Control software"
 
 
 def custom_openapi():
+    """
+    Customizes the OpenAPI schema for the FastAPI app, including logo and metadata.
+    Returns the cached schema if already generated.
+    """
     if app.openapi_schema:
         return app.openapi_schema
     openapi_schema = get_openapi(
@@ -41,11 +48,9 @@ def custom_openapi():
         summary=app.summary,
         description=app.description,
         routes=app.routes,
-        tags=app.openapi_tags
+        tags=app.openapi_tags,
     )
-    openapi_schema["info"]["x-logo"] = {
-        "url": "/banner_inverse.png"
-    }
+    openapi_schema["info"]["x-logo"] = {"url": "/banner_inverse.png"}
     app.openapi_schema = openapi_schema
     return app.openapi_schema
 
@@ -54,6 +59,14 @@ app.openapi = custom_openapi
 
 
 def challonge_cache(data_type: ChDataType | None = None):
+    """
+    Caches and returns Challonge tournament data (tournaments, matches, participants).
+    Updates cache if more than 30 seconds have passed since last update.
+    Args:
+        data_type (ChDataType | None): The type of data to return from the cache.
+    Returns:
+        The requested Challonge data.
+    """
     global ch_cache_last_updated, ch_cache_data
     # if challonge hasn't been updated in the past 30sec, update cached data
     if datetime.datetime.now() - ch_cache_last_updated > datetime.timedelta(seconds=30):
@@ -63,8 +76,11 @@ def challonge_cache(data_type: ChDataType | None = None):
         ch_cache_data[ChDataType.tournaments] = tournaments
         ch_cache_data[ChDataType.matches] = matches
         ch_cache_data[ChDataType.participants] = participants
-        print("Challonge cache updated! Last update",
-              datetime.datetime.now() - ch_cache_last_updated, "ago.")
+        print(
+            "Challonge cache updated! Last update",
+            datetime.datetime.now() - ch_cache_last_updated,
+            "ago.",
+        )
         ch_cache_last_updated = datetime.datetime.now()
     else:  # use cached data
         tournaments = ch_cache_data[ChDataType.tournaments]
@@ -88,19 +104,19 @@ active_tournament = tournaments[0]
 
 
 def get_robot_record_id(id: str):
-    """returns a w-l-t record loaded from challonge based on the name of the \
-        robot and the currently selected tournament"""
+    """Returns a W-L-T record loaded from Challonge based on the robot's name and the currently selected tournament.
+    Args:
+        id (str): The internal robot ID.
+    Returns:
+        str: The win-loss-tie record as a string, or an empty string if not found.
+    """
     c_parts = challonge_cache(ChDataType.participants)
     c_matcs = challonge_cache(ChDataType.matches)
 
     participants = {  # pare down challonge data and add w/l/t slots for keeping track
-        p["id"]: {
-            "id": p["id"],
-            "name": p["name"],
-            "wins": 0,
-            "losses": 0,
-            "ties": 0
-        } for p in c_parts}
+        p["id"]: {"id": p["id"], "name": p["name"], "wins": 0, "losses": 0, "ties": 0}
+        for p in c_parts
+    }
     matches = [
         {
             "id": m["id"],
@@ -109,13 +125,14 @@ def get_robot_record_id(id: str):
             "winner_id": m["winner_id"],
             "loser_id": m["loser_id"],
             "state": m["state"],
-        } for m in c_matcs
+        }
+        for m in c_matcs
     ]
 
     # print(participants, matches)
 
     for m in matches:
-        if m['state'] != "complete":  # make sure match completed
+        if m["state"] != "complete":  # make sure match completed
             continue
         if m["winner_id"] != None and m["loser_id"] != None:
             participants[m["winner_id"]]["wins"] += 1
@@ -129,7 +146,9 @@ def get_robot_record_id(id: str):
     else:
         return ""  # will return if id does not resolve to a robot, such as for a grudge match
 
-    text = ""  # will return if robot name does not exist in selected challonge tournament
+    text = (
+        ""  # will return if robot name does not exist in selected challonge tournament
+    )
     for id in participants.keys():
         p = participants[id]
         # print(p)
@@ -139,7 +158,12 @@ def get_robot_record_id(id: str):
 
 
 def robot_exists_in_cur_ch_tournament(id: str) -> bool:
-    """returns boolean value of whether the current internal id exists in the challonge tournament"""
+    """Returns True if the current internal robot ID exists in the Challonge tournament, otherwise False.
+    Args:
+        id (str): The internal robot ID.
+    Returns:
+        bool: True if robot exists in tournament, False otherwise.
+    """
     c_parts = challonge_cache(ChDataType.participants)
     # pare down challonge data to just names
     p_names = [p["name"] for p in c_parts]
@@ -153,7 +177,7 @@ def robot_exists_in_cur_ch_tournament(id: str) -> bool:
 
 @app.exception_handler(RequestValidationError)
 async def override_config_page_errors_to_404_page(request: Request, exc):
-    """override config page `not found` errors to redirect to 404.html, otherwise re raise exception"""
+    """Overrides config page `not found` errors to redirect to 404.html, otherwise re-raises exception."""
     if "/config" in str(request.url):
         with open("./static/404.html", "r") as f:
             content = f.read().replace("{header}", get_header(WebPage.home))
@@ -162,24 +186,52 @@ async def override_config_page_errors_to_404_page(request: Request, exc):
         raise exc
 
 
-@app.get("/", tags=["configpages"], responses={307: {"content": {"text/html": {}}}}, response_class=RedirectResponse)
+@app.get(
+    "/",
+    tags=["configpages"],
+    responses={307: {"content": {"text/html": {}}}},
+    response_class=RedirectResponse,
+)
 def index() -> RedirectResponse:
-    """Redirects to `config/home`"""
+    """Redirects to `/config/home`."""
     return RedirectResponse("/config/home", status_code=307)
 
 
-@app.get("/config/{webpage}", tags=["configpages"], responses={200: {"content": {"text/html": {}}}}, response_class=HTMLResponse)
+@app.get(
+    "/config/{webpage}",
+    tags=["configpages"],
+    responses={200: {"content": {"text/html": {}}}},
+    response_class=HTMLResponse,
+)
 def html_page(webpage: WebPage) -> HTMLResponse:
-    """Return HTML for one of the available configuration pages. default is home."""
+    """Returns HTML for one of the available configuration pages. Default is home."""
     with open(f"./static/{webpage.name}.html", "r") as f:
         content = f.read()
         if webpage == WebPage.home:
             content = content.replace("{markdown}", readme_to_html())
-        return HTMLResponse(content=content.replace("{header}", get_header(webpage)).replace("{appname}", app.title).replace("{footer}", get_footer(webpage, "2024", "Robot Smashing Leaque, LLC", app.title, app.version)))
+        return HTMLResponse(
+            content=content.replace("{header}", get_header(webpage))
+            .replace("{appname}", app.title)
+            .replace(
+                "{footer}",
+                get_footer(
+                    webpage,
+                    "2024",
+                    "Robot Smashing Leaque, LLC",
+                    app.title,
+                    app.version,
+                ),
+            )
+        )
 
 
 @app.get("/api/v1/active/{queue_pos}/{color}/image", tags=["activerobot"])
-def get_robot_image_json(color: Color, queue_pos: QueuePosition, transform: ImageTransform | None = None, max_size: int | None = None) -> JSONResponse:
+def get_robot_image_json(
+    color: Color,
+    queue_pos: QueuePosition,
+    transform: ImageTransform | None = None,
+    max_size: int | None = None,
+) -> JSONResponse:
     """returns the stored image url for selected robot"""
     id = queue[color][queue_pos][Field.id]
     return {"field": "imageurl", "text": f"http://{get_ip()}/api/v1/images/get/{id}"}
@@ -187,35 +239,57 @@ def get_robot_image_json(color: Color, queue_pos: QueuePosition, transform: Imag
 
 @app.get("/api/v1/active/{queue_pos}/{color}/record", tags=["activerobot"])
 def get_robot_record_json(queue_pos: QueuePosition, color: Color) -> JSONResponse:
-    """ returns the record (W-L-T) of the selected robot"""
+    """returns the record (W-L-T) of the selected robot"""
     id = queue[color][queue_pos][Field.id]
     text = get_robot_record_id(id)
     return {"field": Field.record, "text": text, "format": "W-L-T"}
 
 
 @app.get("/api/v1/active/{queue_pos}/{color}/{field}", tags=["activerobot"])
-def get_robot_field_json(color: Color, field: Field, queue_pos: QueuePosition) -> JSONResponse:
+def get_robot_field_json(
+    color: Color, field: Field, queue_pos: QueuePosition
+) -> JSONResponse:
     """get other field of the current robot"""
     return {"field": field, "text": queue[color][queue_pos][field]}
 
 
-@app.get("/api/v1/list/{weightclass}", tags=["robotlist"], deprecated=True,
-         description="Get list of robots selected by weightclass. Deprecated, please use `api/v1/robots/list/{weightclass}` instead")
+@app.get(
+    "/api/v1/list/{weightclass}",
+    tags=["robotlist"],
+    deprecated=True,
+    description="Get list of robots selected by weightclass. Deprecated, please use `api/v1/robots/list/{weightclass}` instead",
+)
 @app.get("/api/v1/robots/list/{weightclass}", tags=["robotlist"])
-async def get_robot_list(weightclass: Weightclass, sort: Field | None = Field.name, reverse: bool | None = False):
-    """Get list of robots selected by weightclass"""
+async def get_robot_list(
+    weightclass: Weightclass,
+    sort: Field | None = Field.name,
+    reverse: bool | None = False,
+):
+    """
+    Asynchronously retrieves a list of robots filtered by weightclass, sorted by the specified field and order.
+    Args:
+        weightclass (Weightclass): The weight class to filter robots by.
+        sort (Field | None): The field to sort the robots by.
+        reverse (bool | None): Whether to reverse the sort order.
+    Returns:
+        list: A sorted list of robot dictionaries with updated records and Challonge existence flags.
+    """
     global robots
     # print(robots.items())
     if weightclass != Weightclass.all:
         returnable = [
-            robot for key, robot in robots.items() if robot[Field.weightclass] == weightclass]
+            robot
+            for key, robot in robots.items()
+            if robot[Field.weightclass] == weightclass
+        ]
     else:
         returnable = [robot[1] for robot in robots.items()]
         # print(returnable)
     for robot in returnable:
         robot[Field.record] = get_robot_record_id(robot[Field.id])
         robot[Field.existsinchallonge] = robot_exists_in_cur_ch_tournament(
-            robot[Field.id])
+            robot[Field.id]
+        )
     return sort_robots_by_field(returnable, sort, reverse)
 
 
@@ -298,8 +372,15 @@ def start_special_match(type: SpecialMatchType, weightclass: Weightclass):
         queue[Color.blue][QueuePosition.current] = rumble(weightclass)
 
 
-@app.get("/api/v1/images/get/{id}", tags=["images"], responses={200: {"content": {"image/png": {}}}}, response_class=Response)
-def get_image_by_id(id: str, transform: ImageTransform | None = None, max_size: int | None = None):
+@app.get(
+    "/api/v1/images/get/{id}",
+    tags=["images"],
+    responses={200: {"content": {"image/png": {}}}},
+    response_class=Response,
+)
+def get_image_by_id(
+    id: str, transform: ImageTransform | None = None, max_size: int | None = None
+):
     # crop = True if crop is not None else False
     if id in [robot[1][Field.id] for robot in robots.items()]:
         image_status = robots[id][Field.imagestatus]
@@ -316,6 +397,14 @@ def get_image_by_id(id: str, transform: ImageTransform | None = None, max_size: 
 
 @app.post("/api/v1/images/save/{id}", tags=["images"])
 async def handle_image_save(id, request: Request):
+    """
+    Asynchronously saves a PNG image for a robot from a base64-encoded form field.
+    Args:
+        id (str): The robot's ID.
+        request (Request): The FastAPI request containing the form data.
+    Raises:
+        TypeError: If the uploaded file is not a PNG image.
+    """
     form_data = await request.form()
     if form_data["imgBase64"].find("image/png") > 0:
         data = form_data["imgBase64"].replace("data:image/png;base64,", "")
@@ -327,14 +416,18 @@ async def handle_image_save(id, request: Request):
         persist(robots)
     else:
         raise TypeError(
-            f"File type {form_data["imgBase64"].split(";")[0].split(":")[-1]} not supported")
-
-# @app.post("/api/v2/images/save/{id}",tags=["images"])
-# async def handle_image_json_save(id: str, ):
+            f"File type {form_data['imgBase64'].split(';')[0].split(':')[-1]} not supported"
+        )
 
 
 @app.post("/api/v1/robots/edit/{id}", tags=["robot"])
 async def edit_robot(id: str, request: Request):
+    """
+    Asynchronously edits an existing robot's information based on the provided JSON payload.
+    Args:
+        id (str): The robot's ID.
+        request (Request): The FastAPI request containing the JSON data.
+    """
     global robots
     json = await request.json()
     if id in [robot[Field.id] for key, robot in robots.items()]:
@@ -354,27 +447,40 @@ async def edit_robot(id: str, request: Request):
 
 @app.post("/api/v1/robots/new", tags=["robot"])
 async def add_robot(robot: NewRobot):
+    """
+    Asynchronously adds a new robot to the database using the provided robot data.
+    Args:
+        robot (NewRobot): The robot data to add.
+    Returns:
+        dict: The newly added robot's data.
+    """
     global robots
     name: str = robot.name.strip()
     id: str = name_to_id(name)
     flavortext: str = robot.flavortext.strip()
-    if flavortext.startswith("\"") or flavortext.startswith("\'"):
+    if flavortext.startswith('"') or flavortext.startswith("'"):
         flavortext = flavortext[1:]
-    if flavortext.endswith("\"") or flavortext.endswith("\'"):
+    if flavortext.endswith('"') or flavortext.endswith("'"):
         flavortext = flavortext[:-1]
-    robots.update({id: {
-        Field.id: id,
-        Field.name: name,
-        Field.teamname: robot.teamname.strip(),
-        Field.weightclass: robot.weightclass,
-        Field.flavortext: flavortext,
-        Field.imagestatus: ImageStatus.ok if image_exists(id) else ImageStatus.error,
-        Field.rank: robot.rank,
-        Field.elo: robot.elo,
-        Field.last_tournament: robot.last_tournament,
-        Field.record_career: robot.record_career,
-        Field.record_year: robot.record_year,
-    }})
+    robots.update(
+        {
+            id: {
+                Field.id: id,
+                Field.name: name,
+                Field.teamname: robot.teamname.strip(),
+                Field.weightclass: robot.weightclass,
+                Field.flavortext: flavortext,
+                Field.imagestatus: (
+                    ImageStatus.ok if image_exists(id) else ImageStatus.error
+                ),
+                Field.rank: robot.rank,
+                Field.elo: robot.elo,
+                Field.last_tournament: robot.last_tournament,
+                Field.record_career: robot.record_career,
+                Field.record_year: robot.record_year,
+            }
+        }
+    )
     persist(robots)
     return robots[id]
     print(robot)
@@ -389,6 +495,12 @@ def delete_robot(id: str):
 
 @app.post("/api/v1/robots/list/{mode}", tags=["robotlist"])
 async def replace_robot_list(mode: RobotListMode, request: Request):
+    """
+    Asynchronously replaces or appends to the robot list based on the provided mode and request data.
+    Args:
+        mode (RobotListMode): The mode for updating the robot list (replace or append).
+        request (Request): The FastAPI request containing the robot list data.
+    """
     global robots
     if mode == RobotListMode.replace:
         robots = {}
@@ -401,17 +513,21 @@ async def replace_robot_list(mode: RobotListMode, request: Request):
         name: str = robot[data["key"]["robot_name"]].strip()
         id: str = name_to_id(name)
         flavortext: str = robot[data["key"]["flavortext"]].strip()
-        if flavortext.startswith("\"") or flavortext.startswith("\'"):
+        if flavortext.startswith('"') or flavortext.startswith("'"):
             flavortext = flavortext[1:]
-        if flavortext.endswith("\"") or flavortext.endswith("\'"):
+        if flavortext.endswith('"') or flavortext.endswith("'"):
             flavortext = flavortext[:-1]
         robots[id] = {
             Field.id: id,
             Field.name: name,
             Field.teamname: robot[data["key"]["team_name"]].strip(),
-            Field.weightclass: Weightclass[robot[data["key"]["weightclass"]].strip().lower()],
+            Field.weightclass: Weightclass[
+                robot[data["key"]["weightclass"]].strip().lower()
+            ],
             Field.flavortext: flavortext,
-            Field.imagestatus: ImageStatus.ok if image_exists(id) else ImageStatus.error,
+            Field.imagestatus: (
+                ImageStatus.ok if image_exists(id) else ImageStatus.error
+            ),
             Field.rank: robot[data["key"]["rank"]].strip(),
             Field.elo: robot[data["key"]["elo"]].strip(),
             Field.last_tournament: robot[data["key"]["last_tournament"]].strip(),
@@ -424,6 +540,9 @@ async def replace_robot_list(mode: RobotListMode, request: Request):
 
 @app.delete("/api/v1/robots/list/clear", tags=["robotlist"])
 async def clear_robot_list():
+    """
+    Asynchronously clears the robot list and reloads persisted data.
+    """
     global robots
     persist({})
     robots = load_persisted()
@@ -431,6 +550,11 @@ async def clear_robot_list():
 
 @app.get("/api/v1/tournaments/list", tags=["tournaments"])
 async def get_tournaments():
+    """
+    Asynchronously retrieves the list of tournaments from the Challonge cache.
+    Returns:
+        list: The list of tournaments.
+    """
     tournaments = challonge_cache(ChDataType.tournaments)
     # return [{"name": tournament["name"], "id": tournament["id"]} for tournament in tournaments]
     return tournaments
@@ -438,12 +562,17 @@ async def get_tournaments():
 
 @app.post("/api/v1/tournaments/active", tags=["tournaments"])
 async def set_active_tournament(request: Request):
+    """
+    Asynchronously sets the active tournament based on the provided tournament ID in the request JSON.
+    Args:
+        request (Request): The FastAPI request containing the tournament ID.
+    """
     global active_tournament, ch_cache_last_updated
     # force cache update because new tournament
     json = await request.json()
     tournaments = challonge_cache(ChDataType.tournaments)
     for t in tournaments:
-        if int(json["id"]) == int(t['id']):
+        if int(json["id"]) == int(t["id"]):
             active_tournament = t
     ch_cache_last_updated = datetime.datetime(1970, 1, 1)
 
@@ -467,12 +596,15 @@ def get_active_tournament_matches():
     return matches
 
 
-app.mount("/", StaticFiles(directory="./icons",
-          check_dir=True), name="icons")
+app.mount("/", StaticFiles(directory="./icons", check_dir=True), name="icons")
 
 
-def return_image_from_id(image_name, transform: ImageTransform | None, max_size: int | None = None) -> Response:
-    if (image_name in [robot[1][Field.id] for robot in robots.items()]) or image_name == "rsl-logo":
+def return_image_from_id(
+    image_name, transform: ImageTransform | None, max_size: int | None = None
+) -> Response:
+    if (
+        image_name in [robot[1][Field.id] for robot in robots.items()]
+    ) or image_name == "rsl-logo":
         # image_name = robots[<>[image_id]]["name"]
         try:
             with open(f"./images/{image_name}.png", "rb") as f:
@@ -484,8 +616,7 @@ def return_image_from_id(image_name, transform: ImageTransform | None, max_size:
                     right = left + crop_size
                     lower = upper + crop_size
 
-                    new_image = image_pil.crop(
-                        (left, upper, right, lower))
+                    new_image = image_pil.crop((left, upper, right, lower))
                 elif transform == ImageTransform.pad:
                     if image_pil.height < image_pil.width:
                         new_image = Image.new(
@@ -515,7 +646,11 @@ def return_image_from_id(image_name, transform: ImageTransform | None, max_size:
                         factor = max_size / new_image.width
                         # print(factor)
                         new_image = new_image.resize(
-                            (int(new_image.width * factor), int(new_image.height * factor)))
+                            (
+                                int(new_image.width * factor),
+                                int(new_image.height * factor),
+                            )
+                        )
                         # print(new_image.width, new_image.height)
                 return_image = io.BytesIO()
                 new_image.save(return_image, "png")
@@ -535,7 +670,8 @@ def return_image_from_id(image_name, transform: ImageTransform | None, max_size:
                 factor = max_size / new_image.width
                 # print(factor)
                 new_image = new_image.resize(
-                    (int(new_image.width * factor), int(new_image.height * factor)))
+                    (int(new_image.width * factor), int(new_image.height * factor))
+                )
                 # print(new_image.width, new_image.height)
         return_image = io.BytesIO()
         new_image.save(return_image, "png")

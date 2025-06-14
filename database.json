@@ -1,1 +1,614 @@
-{"robots": {"05fc5a5e11e4a7ebf35b21a0a94615f50112a874": {"id": "05fc5a5e11e4a7ebf35b21a0a94615f50112a874", "name": "Lil T", "teamname": "Nacho Robotics", "weightclass": "antweight", "flavortext": "Mini version of Tomahawk but actually uses screws \nAll TPU body", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "a6b16edfc2c542dd134b42781c87ab4494bc661f": {"id": "a6b16edfc2c542dd134b42781c87ab4494bc661f", "name": "GraFight", "teamname": "Mobot", "weightclass": "antweight", "flavortext": "GraFight is a returning champ, and one of the very few bots to have made it to every single RSL event in Minnesota. GraFight is an RSL favorite - nicknamed \"The Roomba of Doom\".", "imagestatus": "ok", "record": "2-2-0", "existsinchallonge": true}, "8da5b2c83f835527a6ef7deccaa932fcacc8a29c": {"id": "8da5b2c83f835527a6ef7deccaa932fcacc8a29c", "name": "Gary", "teamname": "Flipped", "weightclass": "antweight", "flavortext": "Controller has to be held sideways\nUses a lifter\nRelies on duct tape", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "6c7fe02750cb898532e3ecc26525f30b95aa7af4": {"id": "6c7fe02750cb898532e3ecc26525f30b95aa7af4", "name": "Blight", "teamname": "Giddy Bots", "weightclass": "antweight", "flavortext": "Blight is a 4WD vert. It features large titanium plows which provide ample front-end defense.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "cdbf58baffb9c814788279fc2b1820407083f642": {"id": "cdbf58baffb9c814788279fc2b1820407083f642", "name": "Robot A", "teamname": "Team Clear", "weightclass": "antweight", "flavortext": "A rectangular test platform with delusions of grandeur.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "7a38491269c8e4e4d202a74283086acd15f0132f": {"id": "7a38491269c8e4e4d202a74283086acd15f0132f", "name": "2nd Try", "teamname": "Squid Robotics", "weightclass": "antweight", "flavortext": "2nd Try is a googly-eyed horizontal spinner with a massive weapon - watch out!", "imagestatus": "ok", "record": "2-2-0", "existsinchallonge": true}, "e93a43189f16c1dd5ee6faead5beb7d7bdb02dc3": {"id": "e93a43189f16c1dd5ee6faead5beb7d7bdb02dc3", "name": "CookieCutter", "teamname": "Dead Batteries Robotics", "weightclass": "antweight", "flavortext": "Cookie Cutter utilizes a vertical spinner and wedge. It is a returning RSL champion, having taken 1st at the first RSL Legion tournament.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "2adbc860090f99b460d3c684f7485233d12a2838": {"id": "2adbc860090f99b460d3c684f7485233d12a2838", "name": "Monolith", "teamname": "Fairy Powerful", "weightclass": "antweight", "flavortext": "An Umbreon-inspired shuffling horizontal spinner. Monolith's 130  gram blade will pack a punch!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "707116407cd6fbb3d789bcfa0558ee0047015f80": {"id": "707116407cd6fbb3d789bcfa0558ee0047015f80", "name": "banila and aboras", "teamname": "Kwin-Alt", "weightclass": "antweight", "flavortext": "The Demon capsule monsters return in antweight form", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "a762d490807d1de275a94823178d08a4ff68cd64": {"id": "a762d490807d1de275a94823178d08a4ff68cd64", "name": "Barry", "teamname": "Flipped", "weightclass": "antweight", "flavortext": "- Uses heat and vertical spinner\n- Brand new\n- Mix of nylon and PLA", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "7f3bfd6b1674937bbf51b55ff336d72b7b142742": {"id": "7f3bfd6b1674937bbf51b55ff336d72b7b142742", "name": "Painkiller", "teamname": "Dead Batteries Robotics", "weightclass": "antweight", "flavortext": "Faster than a bullet. Terrifying scream. Enraged and full of anger. He is the Painkiller. This is the Painkiller.", "imagestatus": "ok", "record": "2-2-0", "existsinchallonge": true}, "8b6f89003c7aabcb897a7d3e2680a4533e118df8": {"id": "8b6f89003c7aabcb897a7d3e2680a4533e118df8", "name": "Pork Lift", "teamname": "Team Fireball Robotics", "weightclass": "antweight", "flavortext": "Pork Lift is a pig-themed lifter, capable of using either a forked or wedge configuration. Both include googly eyes. Oink!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "a5c37bb73968c08ed9c7959d57d30a4155572cde": {"id": "a5c37bb73968c08ed9c7959d57d30a4155572cde", "name": "Necessary Evil", "teamname": "Imminent Disaster", "weightclass": "antweight", "flavortext": "Necessary Evil is a Betz Botz Kit bot and utilizes either forks or a wedge. ", "imagestatus": "ok", "record": "1-3-0", "existsinchallonge": true}, "2248e382fdcfb0ca66451c031b340af302ef97f7": {"id": "2248e382fdcfb0ca66451c031b340af302ef97f7", "name": "Lawnmower of Chaos", "teamname": "Team Fireball Robotics", "weightclass": "antweight", "flavortext": "Lawnmower of Chaos (L.M.O.C.) is an overhead, full-body bar spinner. Also, it could possibly cut grass, but we haven't tested it.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "7e23ac0461a32a3fe0f8ee08621b2ff56f30b15f": {"id": "7e23ac0461a32a3fe0f8ee08621b2ff56f30b15f", "name": "Belladonna", "teamname": "Team Fireball Robotics", "weightclass": "antweight", "flavortext": "Belladonna is a 2WD vertical spinner - aptly named after a deadly plant.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "757d6a6bfb5c29713c6a1644cc2243a6703b8058": {"id": "757d6a6bfb5c29713c6a1644cc2243a6703b8058", "name": "sash", "teamname": "team Kwin-alt", "weightclass": "antweight", "flavortext": "Sash is a fully upgraded kit bot! Seen here using a 2-wheel drive system and horizontal spinner.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "690af089c0dc1d3a1d8ce1bf6e2d300750dd7b8a": {"id": "690af089c0dc1d3a1d8ce1bf6e2d300750dd7b8a", "name": "RedDragon", "teamname": "Dah Bot Boyz", "weightclass": "antweight", "flavortext": "RedDragon is a TPU pusher bot, sporting a really cool sticker.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "00706b5e9ede7f2fb6145370efd20ef72969df11": {"id": "00706b5e9ede7f2fb6145370efd20ef72969df11", "name": "Neon", "teamname": "Dah Bot Boyz", "weightclass": "antweight", "flavortext": "Neon is a TPU pusher bot, with a large front wedge.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "01d19bf031de83ac3444fbbf8b29a2e2abfbbc51": {"id": "01d19bf031de83ac3444fbbf8b29a2e2abfbbc51", "name": "Jimmy Jazz", "teamname": "Kiron Robotics", "weightclass": "antweight", "flavortext": "Jimmy Jazz is a beta edition of the new Scalar 1 lb combat robot kit. Current record: 5 wins, 2 losses.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "c92848b8c99c7fe1e9a9697fa92a0cc4b309c8b5": {"id": "c92848b8c99c7fe1e9a9697fa92a0cc4b309c8b5", "name": "Johhny Crash", "teamname": "Kiron Robotics", "weightclass": "antweight", "flavortext": "Johhny Crash is a circular bot with a metal shell. It has fought in previous tournaments under the alias \"Supernova\".", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "388944a2341a5c3dcc4d74f0eb2509c309f678e5": {"id": "388944a2341a5c3dcc4d74f0eb2509c309f678e5", "name": "Mini Marg", "teamname": "Nacho Robotics", "weightclass": "antweight", "flavortext": "Modified scalar with the same back fins as Marg", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "4b8f3a55745d364a01c3a4c8487a5fe110dea615": {"id": "4b8f3a55745d364a01c3a4c8487a5fe110dea615", "name": "Dice and Slice", "teamname": "Board Game Breakfast Bots", "weightclass": "antweight", "flavortext": "Horizontal spinner!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "5a205de46742b724da4bcd47864315bbfb29bffa": {"id": "5a205de46742b724da4bcd47864315bbfb29bffa", "name": "Imp", "teamname": "Board Game Breakfast Bots", "weightclass": "antweight", "flavortext": "Vertical spinner", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "1778011d76abab63f8683ec00f560f177275bc4b": {"id": "1778011d76abab63f8683ec00f560f177275bc4b", "name": "Mars", "teamname": "Night Sky Robotics", "weightclass": "antweight", "flavortext": "All of Night Sky Robotics bots have celestial themes to them. Mars features a vertical drum spinner with hardened steel blades, aluminum chassis covered Ultra High Molecular Weight Polyethylene. This bot is driven by 9 year old Rory, while his sister Molly helps in the pits and dad Matt builds and maintains the bot.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "f16f98a788438f3dd9bbde103777cf1f1d00260e": {"id": "f16f98a788438f3dd9bbde103777cf1f1d00260e", "name": "Thebe", "teamname": "Ganymede Combat Robotics", "weightclass": "antweight", "flavortext": "Thebe, daughter of Zeus, sharpens her hunting prowess with each passing day. As her skill intensifies, so too does the peril. Prepare for the rising challenge.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "23812d15edee8ba212288dfcff9c7e913d1d7d2e": {"id": "23812d15edee8ba212288dfcff9c7e913d1d7d2e", "name": "Metis", "teamname": "Ganymede Combat Robotics", "weightclass": "antweight", "flavortext": "Metis, the goddess of wisdom, teaches us the ways of combat and changes as the need arises.  What does she bring to the challenge this time and are you ready?", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "aa80ab26001974e2d0c210ca2895b3f0d367dee4": {"id": "aa80ab26001974e2d0c210ca2895b3f0d367dee4", "name": "Soldier boy", "teamname": "Rookie Mistake", "weightclass": "antweight", "flavortext": "A modular spinner with a custom hub motor and treads.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "59a5aa04b1c8e78ff5ef8339844bdafa5e755a12": {"id": "59a5aa04b1c8e78ff5ef8339844bdafa5e755a12", "name": "Firaga", "teamname": "Team Hazardous Robotics", "weightclass": "antweight", "flavortext": "Shell Spinner. Started building it 9pm the day before the event. What is sleep?", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "2848d196caf64d53d470e9c7b4bc6b7496a31ba6": {"id": "2848d196caf64d53d470e9c7b4bc6b7496a31ba6", "name": "Exogenesis", "teamname": "Knights of Cydonia", "weightclass": "antweight", "flavortext": "Exogenesis is using a flipper - very cool!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "270d5b4a5212498c8e548b2f97b2c2e1297f4459": {"id": "270d5b4a5212498c8e548b2f97b2c2e1297f4459", "name": "Hypersonic", "teamname": "the weather", "weightclass": "antweight", "flavortext": "Here to check your top armor", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "1bcaed689e60dbb55e879d07255749968bea0c4c": {"id": "1bcaed689e60dbb55e879d07255749968bea0c4c", "name": "Citizen Erased", "teamname": "Knights of Cydonia", "weightclass": "antweight", "flavortext": "A dual drum bristle bot. MRCA Bristle Bonus - Weight=1.75lbs/793g", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "9ef16a07d9bfb318f1b50bc00c2fab4637e542d9": {"id": "9ef16a07d9bfb318f1b50bc00c2fab4637e542d9", "name": "Kilroy", "teamname": "No Experience Required Robotics", "weightclass": "antweight", "flavortext": "Kilroy was here", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "e52c854d5631eec7468ba4727b4c77eb745f2965": {"id": "e52c854d5631eec7468ba4727b4c77eb745f2965", "name": "Demo", "teamname": "No Experience Required Robotics", "weightclass": "antweight", "flavortext": "You break it, You buy it.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "84d020414d17790f9b7fa29fbccae3a7571c1a42": {"id": "84d020414d17790f9b7fa29fbccae3a7571c1a42", "name": "Stabitha", "teamname": "Dead Batteries Robotics", "weightclass": "antweight", "flavortext": "I don't get mad........ I get stabby", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "0bcb2614ef70d273496a3b4ea8ab59b77adf268e": {"id": "0bcb2614ef70d273496a3b4ea8ab59b77adf268e", "name": "Delirium", "teamname": "Late Night Robots", "weightclass": "antweight", "flavortext": "The Three Blind Mice combo", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "1cc388458b8c0795cd64ead091b73ac0145ff0a9": {"id": "1cc388458b8c0795cd64ead091b73ac0145ff0a9", "name": "mim\u0153m\u0153mw\u0153", "teamname": "Late Night Robots", "weightclass": "antweight", "flavortext": "Hollow Knight Grub", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "dae39f38c5d364277f2930ec6508ba0a5cb9357e": {"id": "dae39f38c5d364277f2930ec6508ba0a5cb9357e", "name": "Calculated Mediocrity", "teamname": "Blackpony Productions", "weightclass": "antweight", "flavortext": "its ok i guess", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "6b2c88193c8a88d3d7a5375fd96e4b9d9daba030": {"id": "6b2c88193c8a88d3d7a5375fd96e4b9d9daba030", "name": "Rip and Tear", "teamname": "Putz Robotics", "weightclass": "antweight", "flavortext": "Rip & Tear, formerly Tornado of Destruction & Dad's Spinner, is a returning RSL finalist. It is a horizontal spinner that can cause some serious damage!\nJust like Doom Guy, this bot rips and tears its way through the competition. ", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "ae417d6490ea91148766ff0876f68c94c678c4ad": {"id": "ae417d6490ea91148766ff0876f68c94c678c4ad", "name": "Tomahawk 2.0", "teamname": "Nacho Robotics", "weightclass": "beetleweight", "flavortext": "Aluminum Beater go brrrrrrr. Started as a college capstone project.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "3e03cfafb7b34a6fcd84c0a7aabccc8ae8862f95": {"id": "3e03cfafb7b34a6fcd84c0a7aabccc8ae8862f95", "name": "Stress Concentration", "teamname": "TRC", "weightclass": "beetleweight", "flavortext": "No info on this bot. We'll all be surprised!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "b2f1b4110758e9e4c7766c104b0114ba43fa9abb": {"id": "b2f1b4110758e9e4c7766c104b0114ba43fa9abb", "name": "Marg", "teamname": "Nacho Robotics", "weightclass": "beetleweight", "flavortext": "Modified scalar with the same back fins as Marg\n", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "cc3c6269b165672c6b88efc3483c6265c12e29c2": {"id": "cc3c6269b165672c6b88efc3483c6265c12e29c2", "name": "Fairy Powerful", "teamname": "Fairy Powerful", "weightclass": "beetleweight", "flavortext": "A 4-wheel drive drisk with a Sylveon-inspired paint scheme. This is the bot I've wanted to build ever since I decided to build robots.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "08f1dcb1cbe5edacc763fed365ee46e5c05bb91e": {"id": "08f1dcb1cbe5edacc763fed365ee46e5c05bb91e", "name": "Chaotic Destructor", "teamname": "Putz Robotics", "weightclass": "beetleweight", "flavortext": "Big brother of Chaotic Rampage, Chaotic Destructor is coming into battle with some fierce hitting power. Sporting a 6 inch AR500 steel weapon, it's ready to deal massive damage!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "0c22c226cfc58bcacbbf19991fe7ac0890f34054": {"id": "0c22c226cfc58bcacbbf19991fe7ac0890f34054", "name": "The Trooper", "teamname": "Dead Batteries Robotics", "weightclass": "beetleweight", "flavortext": "The Trooper is a returning RSL finalist. It's design is based on the D2 combat robot kit and it uses a titanium wedge.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "670fcac9a1889fa8e1a8a5b5449ba46af76af257": {"id": "670fcac9a1889fa8e1a8a5b5449ba46af76af257", "name": "Skippy", "teamname": "Snuffy robotics", "weightclass": "beetleweight", "flavortext": "Skippy is a returning RSL finalist. It utilizes a FingerTech beater bar.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "de39b254e2f35f3d4f797fd9ac0debea7aee9b42": {"id": "de39b254e2f35f3d4f797fd9ac0debea7aee9b42", "name": "Specture", "teamname": "AMP Robotics", "weightclass": "beetleweight", "flavortext": "Both RSL and MRCA has seen the beetleweight version of Specture perform quite well - having taken second place at the Minnesota Monster Mash and first place at the MRCA Finals in 2023.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "dd7b1f9d7b5af294c023fa5febeb2a5e2e782446": {"id": "dd7b1f9d7b5af294c023fa5febeb2a5e2e782446", "name": "Hodag", "teamname": "Team Cryptid Robotics", "weightclass": "beetleweight", "flavortext": "A Tantrum inspired spinner", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "d893dcf88cd0f5610bf02dc682a909f980e73d53": {"id": "d893dcf88cd0f5610bf02dc682a909f980e73d53", "name": "GRIMM", "teamname": "Hanson", "weightclass": "beetleweight", "flavortext": "2wd brushless undercutter", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "07e3c41341071a6466813370efbdc160b7e29d60": {"id": "07e3c41341071a6466813370efbdc160b7e29d60", "name": "COYOTE TIME", "teamname": "Club House Robotics", "weightclass": "plastic_ant", "flavortext": "We don't have a picture of Coyote Time to confirm, but we're told that it's a D2 kit bot.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "35dff489c10ef5f9d1d9bfb484c1545330ac1e9a": {"id": "35dff489c10ef5f9d1d9bfb484c1545330ac1e9a", "name": "Plan Z Rebirth", "teamname": "Penumbral Robotics", "weightclass": "beetleweight", "flavortext": "Spinner", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "958dd493ea96e3e541be6f01b8bc2339df55e516": {"id": "958dd493ea96e3e541be6f01b8bc2339df55e516", "name": "Microwave", "teamname": "the weather", "weightclass": "beetleweight", "flavortext": "4wd undercutter", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "b74dd130fe4e46c52aeb39878480cfe50324dab9": {"id": "b74dd130fe4e46c52aeb39878480cfe50324dab9", "name": "Something", "teamname": "AMP Robotics", "weightclass": "beetleweight", "flavortext": "Something sure is\u2026 something!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "b7615ab0187c3e3edc489ef8795ed977ee455850": {"id": "b7615ab0187c3e3edc489ef8795ed977ee455850", "name": "Weaponized Incompetence", "teamname": "Blackpony Productions", "weightclass": "beetleweight", "flavortext": "This guy has a lifter does that count as weaponized?\nOver 1/6th of this bots weight is in AR500 Steel\nOver 1/6th of this bot knows what's it's doing so can it really be that incompetent?", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "2b80b68da6bfc335d725bb2c69dea4c0b5769e38": {"id": "2b80b68da6bfc335d725bb2c69dea4c0b5769e38", "name": "Kamikaze", "teamname": "Astro Labs", "weightclass": "beetleweight", "flavortext": "Second weekend in a row of fighting.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "6e605e305b63253fb6099cb208ce74686a7b7908": {"id": "6e605e305b63253fb6099cb208ce74686a7b7908", "name": "SunFlower Super Nova", "teamname": "Team So EXTRA!", "weightclass": "beetleweight", "flavortext": "Something is going to explode!!!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "004af62bd6c58aa05ff8a92ce8d8375bbf2be81f": {"id": "004af62bd6c58aa05ff8a92ce8d8375bbf2be81f", "name": "Pipeline Punch", "teamname": "Late Night Robots", "weightclass": "beetleweight", "flavortext": "4wd Vert", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "c4c219a3a5cfb74abd48d5aa74e569617c040ee8": {"id": "c4c219a3a5cfb74abd48d5aa74e569617c040ee8", "name": "Ataxia", "teamname": "Hazardous Robotics", "weightclass": "beetleweight", "flavortext": "Beetle horizontal bar spinner.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "9fb15f519a0ef53f2f7200d44d72350b3193e1f7": {"id": "9fb15f519a0ef53f2f7200d44d72350b3193e1f7", "name": "Robot C", "teamname": "Team Clear", "weightclass": "antweight", "flavortext": "Robot C is an undercutter that could be described as a cross between a scalar kit and a plastic poison kit. The arena floor knows what it did to deserve this.", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "b499f4df023943cbce0fae3e49e325ed66897f6a": {"id": "b499f4df023943cbce0fae3e49e325ed66897f6a", "name": "Three Amigos", "teamname": "Giddy Bots", "weightclass": "antweight", "flavortext": "Inspired by Three Blind Mice, a team of three 1lb Repeat minibots that compete in Beetles.\nThis is the antweight version, with each one weighing in at 151 grams. With chonky TPU forks, fat urethane wheels and titanium cover plates over the electronics, we anticipate these to be quite robost.\nA single one of them will happily bully a 1lb bot around the arena, so three of them will be a blast!", "imagestatus": "ok", "record": "", "existsinchallonge": false}, "28aa3f03330b78978c8ef2c359ca9b79dbf3650a": {"id": "28aa3f03330b78978c8ef2c359ca9b79dbf3650a", "name": "Perry", "teamname": "", "weightclass": "antweight", "flavortext": "", "imagestatus": "error", "record": "", "existsinchallonge": false}, "6a14cc241ee5f1e559bc8222bb191aa75fef46e1": {"id": "6a14cc241ee5f1e559bc8222bb191aa75fef46e1", "name": "TestBot", "teamname": "RobotSmashingLeague", "weightclass": "antweight", "flavortext": "Don't look! This bot is a test of the system and ordinarily should not be visible!", "imagestatus": "ok", "record": "", "existsinchallonge": false}}}
+{
+  "robots": {
+    "05fc5a5e11e4a7ebf35b21a0a94615f50112a874": {
+      "id": "05fc5a5e11e4a7ebf35b21a0a94615f50112a874",
+      "name": "Lil T",
+      "teamname": "Nacho Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Mini version of Tomahawk but actually uses screws \nAll TPU body",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "a6b16edfc2c542dd134b42781c87ab4494bc661f": {
+      "id": "a6b16edfc2c542dd134b42781c87ab4494bc661f",
+      "name": "GraFight",
+      "teamname": "Mobot",
+      "weightclass": "antweight",
+      "flavortext": "GraFight is a returning champ, and one of the very few bots to have made it to every single RSL event in Minnesota. GraFight is an RSL favorite - nicknamed \"The Roomba of Doom\".",
+      "imagestatus": "ok",
+      "record": "2-2-0",
+      "existsinchallonge": true
+    },
+    "8da5b2c83f835527a6ef7deccaa932fcacc8a29c": {
+      "id": "8da5b2c83f835527a6ef7deccaa932fcacc8a29c",
+      "name": "Gary",
+      "teamname": "Flipped",
+      "weightclass": "antweight",
+      "flavortext": "Controller has to be held sideways\nUses a lifter\nRelies on duct tape",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "6c7fe02750cb898532e3ecc26525f30b95aa7af4": {
+      "id": "6c7fe02750cb898532e3ecc26525f30b95aa7af4",
+      "name": "Blight",
+      "teamname": "Giddy Bots",
+      "weightclass": "antweight",
+      "flavortext": "Blight is a 4WD vert. It features large titanium plows which provide ample front-end defense.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "cdbf58baffb9c814788279fc2b1820407083f642": {
+      "id": "cdbf58baffb9c814788279fc2b1820407083f642",
+      "name": "Robot A",
+      "teamname": "Team Clear",
+      "weightclass": "antweight",
+      "flavortext": "A rectangular test platform with delusions of grandeur.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "7a38491269c8e4e4d202a74283086acd15f0132f": {
+      "id": "7a38491269c8e4e4d202a74283086acd15f0132f",
+      "name": "2nd Try",
+      "teamname": "Squid Robotics",
+      "weightclass": "antweight",
+      "flavortext": "2nd Try is a googly-eyed horizontal spinner with a massive weapon - watch out!",
+      "imagestatus": "ok",
+      "record": "2-2-0",
+      "existsinchallonge": true
+    },
+    "e93a43189f16c1dd5ee6faead5beb7d7bdb02dc3": {
+      "id": "e93a43189f16c1dd5ee6faead5beb7d7bdb02dc3",
+      "name": "CookieCutter",
+      "teamname": "Dead Batteries Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Cookie Cutter utilizes a vertical spinner and wedge. It is a returning RSL champion, having taken 1st at the first RSL Legion tournament.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "2adbc860090f99b460d3c684f7485233d12a2838": {
+      "id": "2adbc860090f99b460d3c684f7485233d12a2838",
+      "name": "Monolith",
+      "teamname": "Fairy Powerful",
+      "weightclass": "antweight",
+      "flavortext": "An Umbreon-inspired shuffling horizontal spinner. Monolith's 130  gram blade will pack a punch!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "707116407cd6fbb3d789bcfa0558ee0047015f80": {
+      "id": "707116407cd6fbb3d789bcfa0558ee0047015f80",
+      "name": "banila and aboras",
+      "teamname": "Kwin-Alt",
+      "weightclass": "antweight",
+      "flavortext": "The Demon capsule monsters return in antweight form",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "a762d490807d1de275a94823178d08a4ff68cd64": {
+      "id": "a762d490807d1de275a94823178d08a4ff68cd64",
+      "name": "Barry",
+      "teamname": "Flipped",
+      "weightclass": "antweight",
+      "flavortext": "- Uses heat and vertical spinner\n- Brand new\n- Mix of nylon and PLA",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "7f3bfd6b1674937bbf51b55ff336d72b7b142742": {
+      "id": "7f3bfd6b1674937bbf51b55ff336d72b7b142742",
+      "name": "Painkiller",
+      "teamname": "Dead Batteries Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Faster than a bullet. Terrifying scream. Enraged and full of anger. He is the Painkiller. This is the Painkiller.",
+      "imagestatus": "ok",
+      "record": "2-2-0",
+      "existsinchallonge": true
+    },
+    "8b6f89003c7aabcb897a7d3e2680a4533e118df8": {
+      "id": "8b6f89003c7aabcb897a7d3e2680a4533e118df8",
+      "name": "Pork Lift",
+      "teamname": "Team Fireball Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Pork Lift is a pig-themed lifter, capable of using either a forked or wedge configuration. Both include googly eyes. Oink!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "a5c37bb73968c08ed9c7959d57d30a4155572cde": {
+      "id": "a5c37bb73968c08ed9c7959d57d30a4155572cde",
+      "name": "Necessary Evil",
+      "teamname": "Imminent Disaster",
+      "weightclass": "antweight",
+      "flavortext": "Necessary Evil is a Betz Botz Kit bot and utilizes either forks or a wedge. ",
+      "imagestatus": "ok",
+      "record": "1-3-0",
+      "existsinchallonge": true
+    },
+    "2248e382fdcfb0ca66451c031b340af302ef97f7": {
+      "id": "2248e382fdcfb0ca66451c031b340af302ef97f7",
+      "name": "Lawnmower of Chaos",
+      "teamname": "Team Fireball Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Lawnmower of Chaos (L.M.O.C.) is an overhead, full-body bar spinner. Also, it could possibly cut grass, but we haven't tested it.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "7e23ac0461a32a3fe0f8ee08621b2ff56f30b15f": {
+      "id": "7e23ac0461a32a3fe0f8ee08621b2ff56f30b15f",
+      "name": "Belladonna",
+      "teamname": "Team Fireball Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Belladonna is a 2WD vertical spinner - aptly named after a deadly plant.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "757d6a6bfb5c29713c6a1644cc2243a6703b8058": {
+      "id": "757d6a6bfb5c29713c6a1644cc2243a6703b8058",
+      "name": "sash",
+      "teamname": "team Kwin-alt",
+      "weightclass": "antweight",
+      "flavortext": "Sash is a fully upgraded kit bot! Seen here using a 2-wheel drive system and horizontal spinner.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "690af089c0dc1d3a1d8ce1bf6e2d300750dd7b8a": {
+      "id": "690af089c0dc1d3a1d8ce1bf6e2d300750dd7b8a",
+      "name": "RedDragon",
+      "teamname": "Dah Bot Boyz",
+      "weightclass": "antweight",
+      "flavortext": "RedDragon is a TPU pusher bot, sporting a really cool sticker.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "00706b5e9ede7f2fb6145370efd20ef72969df11": {
+      "id": "00706b5e9ede7f2fb6145370efd20ef72969df11",
+      "name": "Neon",
+      "teamname": "Dah Bot Boyz",
+      "weightclass": "antweight",
+      "flavortext": "Neon is a TPU pusher bot, with a large front wedge.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "01d19bf031de83ac3444fbbf8b29a2e2abfbbc51": {
+      "id": "01d19bf031de83ac3444fbbf8b29a2e2abfbbc51",
+      "name": "Jimmy Jazz",
+      "teamname": "Kiron Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Jimmy Jazz is a beta edition of the new Scalar 1 lb combat robot kit. Current record: 5 wins, 2 losses.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "c92848b8c99c7fe1e9a9697fa92a0cc4b309c8b5": {
+      "id": "c92848b8c99c7fe1e9a9697fa92a0cc4b309c8b5",
+      "name": "Johhny Crash",
+      "teamname": "Kiron Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Johhny Crash is a circular bot with a metal shell. It has fought in previous tournaments under the alias \"Supernova\".",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "388944a2341a5c3dcc4d74f0eb2509c309f678e5": {
+      "id": "388944a2341a5c3dcc4d74f0eb2509c309f678e5",
+      "name": "Mini Marg",
+      "teamname": "Nacho Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Modified scalar with the same back fins as Marg",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "4b8f3a55745d364a01c3a4c8487a5fe110dea615": {
+      "id": "4b8f3a55745d364a01c3a4c8487a5fe110dea615",
+      "name": "Dice and Slice",
+      "teamname": "Board Game Breakfast Bots",
+      "weightclass": "antweight",
+      "flavortext": "Horizontal spinner!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "5a205de46742b724da4bcd47864315bbfb29bffa": {
+      "id": "5a205de46742b724da4bcd47864315bbfb29bffa",
+      "name": "Imp",
+      "teamname": "Board Game Breakfast Bots",
+      "weightclass": "antweight",
+      "flavortext": "Vertical spinner",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "1778011d76abab63f8683ec00f560f177275bc4b": {
+      "id": "1778011d76abab63f8683ec00f560f177275bc4b",
+      "name": "Mars",
+      "teamname": "Night Sky Robotics",
+      "weightclass": "antweight",
+      "flavortext": "All of Night Sky Robotics bots have celestial themes to them. Mars features a vertical drum spinner with hardened steel blades, aluminum chassis covered Ultra High Molecular Weight Polyethylene. This bot is driven by 9 year old Rory, while his sister Molly helps in the pits and dad Matt builds and maintains the bot.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "f16f98a788438f3dd9bbde103777cf1f1d00260e": {
+      "id": "f16f98a788438f3dd9bbde103777cf1f1d00260e",
+      "name": "Thebe",
+      "teamname": "Ganymede Combat Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Thebe, daughter of Zeus, sharpens her hunting prowess with each passing day. As her skill intensifies, so too does the peril. Prepare for the rising challenge.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "23812d15edee8ba212288dfcff9c7e913d1d7d2e": {
+      "id": "23812d15edee8ba212288dfcff9c7e913d1d7d2e",
+      "name": "Metis",
+      "teamname": "Ganymede Combat Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Metis, the goddess of wisdom, teaches us the ways of combat and changes as the need arises.  What does she bring to the challenge this time and are you ready?",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "aa80ab26001974e2d0c210ca2895b3f0d367dee4": {
+      "id": "aa80ab26001974e2d0c210ca2895b3f0d367dee4",
+      "name": "Soldier boy",
+      "teamname": "Rookie Mistake",
+      "weightclass": "antweight",
+      "flavortext": "A modular spinner with a custom hub motor and treads.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "59a5aa04b1c8e78ff5ef8339844bdafa5e755a12": {
+      "id": "59a5aa04b1c8e78ff5ef8339844bdafa5e755a12",
+      "name": "Firaga",
+      "teamname": "Team Hazardous Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Shell Spinner. Started building it 9pm the day before the event. What is sleep?",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "2848d196caf64d53d470e9c7b4bc6b7496a31ba6": {
+      "id": "2848d196caf64d53d470e9c7b4bc6b7496a31ba6",
+      "name": "Exogenesis",
+      "teamname": "Knights of Cydonia",
+      "weightclass": "antweight",
+      "flavortext": "Exogenesis is using a flipper - very cool!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "270d5b4a5212498c8e548b2f97b2c2e1297f4459": {
+      "id": "270d5b4a5212498c8e548b2f97b2c2e1297f4459",
+      "name": "Hypersonic",
+      "teamname": "the weather",
+      "weightclass": "antweight",
+      "flavortext": "Here to check your top armor",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "1bcaed689e60dbb55e879d07255749968bea0c4c": {
+      "id": "1bcaed689e60dbb55e879d07255749968bea0c4c",
+      "name": "Citizen Erased",
+      "teamname": "Knights of Cydonia",
+      "weightclass": "antweight",
+      "flavortext": "A dual drum bristle bot. MRCA Bristle Bonus - Weight=1.75lbs/793g",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "9ef16a07d9bfb318f1b50bc00c2fab4637e542d9": {
+      "id": "9ef16a07d9bfb318f1b50bc00c2fab4637e542d9",
+      "name": "Kilroy",
+      "teamname": "No Experience Required Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Kilroy was here",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "e52c854d5631eec7468ba4727b4c77eb745f2965": {
+      "id": "e52c854d5631eec7468ba4727b4c77eb745f2965",
+      "name": "Demo",
+      "teamname": "No Experience Required Robotics",
+      "weightclass": "antweight",
+      "flavortext": "You break it, You buy it.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "84d020414d17790f9b7fa29fbccae3a7571c1a42": {
+      "id": "84d020414d17790f9b7fa29fbccae3a7571c1a42",
+      "name": "Stabitha",
+      "teamname": "Dead Batteries Robotics",
+      "weightclass": "antweight",
+      "flavortext": "I don't get mad........ I get stabby",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "0bcb2614ef70d273496a3b4ea8ab59b77adf268e": {
+      "id": "0bcb2614ef70d273496a3b4ea8ab59b77adf268e",
+      "name": "Delirium",
+      "teamname": "Late Night Robots",
+      "weightclass": "antweight",
+      "flavortext": "The Three Blind Mice combo",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "1cc388458b8c0795cd64ead091b73ac0145ff0a9": {
+      "id": "1cc388458b8c0795cd64ead091b73ac0145ff0a9",
+      "name": "mim\u0153m\u0153mw\u0153",
+      "teamname": "Late Night Robots",
+      "weightclass": "antweight",
+      "flavortext": "Hollow Knight Grub",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "dae39f38c5d364277f2930ec6508ba0a5cb9357e": {
+      "id": "dae39f38c5d364277f2930ec6508ba0a5cb9357e",
+      "name": "Calculated Mediocrity",
+      "teamname": "Blackpony Productions",
+      "weightclass": "antweight",
+      "flavortext": "its ok i guess",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "6b2c88193c8a88d3d7a5375fd96e4b9d9daba030": {
+      "id": "6b2c88193c8a88d3d7a5375fd96e4b9d9daba030",
+      "name": "Rip and Tear",
+      "teamname": "Putz Robotics",
+      "weightclass": "antweight",
+      "flavortext": "Rip & Tear, formerly Tornado of Destruction & Dad's Spinner, is a returning RSL finalist. It is a horizontal spinner that can cause some serious damage!\nJust like Doom Guy, this bot rips and tears its way through the competition. ",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "ae417d6490ea91148766ff0876f68c94c678c4ad": {
+      "id": "ae417d6490ea91148766ff0876f68c94c678c4ad",
+      "name": "Tomahawk 2.0",
+      "teamname": "Nacho Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Aluminum Beater go brrrrrrr. Started as a college capstone project.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "3e03cfafb7b34a6fcd84c0a7aabccc8ae8862f95": {
+      "id": "3e03cfafb7b34a6fcd84c0a7aabccc8ae8862f95",
+      "name": "Stress Concentration",
+      "teamname": "TRC",
+      "weightclass": "beetleweight",
+      "flavortext": "No info on this bot. We'll all be surprised!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "b2f1b4110758e9e4c7766c104b0114ba43fa9abb": {
+      "id": "b2f1b4110758e9e4c7766c104b0114ba43fa9abb",
+      "name": "Marg",
+      "teamname": "Nacho Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Modified scalar with the same back fins as Marg\n",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "cc3c6269b165672c6b88efc3483c6265c12e29c2": {
+      "id": "cc3c6269b165672c6b88efc3483c6265c12e29c2",
+      "name": "Fairy Powerful",
+      "teamname": "Fairy Powerful",
+      "weightclass": "beetleweight",
+      "flavortext": "A 4-wheel drive drisk with a Sylveon-inspired paint scheme. This is the bot I've wanted to build ever since I decided to build robots.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "08f1dcb1cbe5edacc763fed365ee46e5c05bb91e": {
+      "id": "08f1dcb1cbe5edacc763fed365ee46e5c05bb91e",
+      "name": "Chaotic Destructor",
+      "teamname": "Putz Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Big brother of Chaotic Rampage, Chaotic Destructor is coming into battle with some fierce hitting power. Sporting a 6 inch AR500 steel weapon, it's ready to deal massive damage!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "0c22c226cfc58bcacbbf19991fe7ac0890f34054": {
+      "id": "0c22c226cfc58bcacbbf19991fe7ac0890f34054",
+      "name": "The Trooper",
+      "teamname": "Dead Batteries Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "The Trooper is a returning RSL finalist. It's design is based on the D2 combat robot kit and it uses a titanium wedge.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "670fcac9a1889fa8e1a8a5b5449ba46af76af257": {
+      "id": "670fcac9a1889fa8e1a8a5b5449ba46af76af257",
+      "name": "Skippy",
+      "teamname": "Snuffy robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Skippy is a returning RSL finalist. It utilizes a FingerTech beater bar.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "de39b254e2f35f3d4f797fd9ac0debea7aee9b42": {
+      "id": "de39b254e2f35f3d4f797fd9ac0debea7aee9b42",
+      "name": "Specture",
+      "teamname": "AMP Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Both RSL and MRCA has seen the beetleweight version of Specture perform quite well - having taken second place at the Minnesota Monster Mash and first place at the MRCA Finals in 2023.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "dd7b1f9d7b5af294c023fa5febeb2a5e2e782446": {
+      "id": "dd7b1f9d7b5af294c023fa5febeb2a5e2e782446",
+      "name": "Hodag",
+      "teamname": "Team Cryptid Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "A Tantrum inspired spinner",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "d893dcf88cd0f5610bf02dc682a909f980e73d53": {
+      "id": "d893dcf88cd0f5610bf02dc682a909f980e73d53",
+      "name": "GRIMM",
+      "teamname": "Hanson",
+      "weightclass": "beetleweight",
+      "flavortext": "2wd brushless undercutter",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "07e3c41341071a6466813370efbdc160b7e29d60": {
+      "id": "07e3c41341071a6466813370efbdc160b7e29d60",
+      "name": "COYOTE TIME",
+      "teamname": "Club House Robotics",
+      "weightclass": "plastic_ant",
+      "flavortext": "We don't have a picture of Coyote Time to confirm, but we're told that it's a D2 kit bot.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "35dff489c10ef5f9d1d9bfb484c1545330ac1e9a": {
+      "id": "35dff489c10ef5f9d1d9bfb484c1545330ac1e9a",
+      "name": "Plan Z Rebirth",
+      "teamname": "Penumbral Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Spinner",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "958dd493ea96e3e541be6f01b8bc2339df55e516": {
+      "id": "958dd493ea96e3e541be6f01b8bc2339df55e516",
+      "name": "Microwave",
+      "teamname": "the weather",
+      "weightclass": "beetleweight",
+      "flavortext": "4wd undercutter",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "b74dd130fe4e46c52aeb39878480cfe50324dab9": {
+      "id": "b74dd130fe4e46c52aeb39878480cfe50324dab9",
+      "name": "Something",
+      "teamname": "AMP Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Something sure is\u2026 something!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "b7615ab0187c3e3edc489ef8795ed977ee455850": {
+      "id": "b7615ab0187c3e3edc489ef8795ed977ee455850",
+      "name": "Weaponized Incompetence",
+      "teamname": "Blackpony Productions",
+      "weightclass": "beetleweight",
+      "flavortext": "This guy has a lifter does that count as weaponized?\nOver 1/6th of this bots weight is in AR500 Steel\nOver 1/6th of this bot knows what's it's doing so can it really be that incompetent?",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "2b80b68da6bfc335d725bb2c69dea4c0b5769e38": {
+      "id": "2b80b68da6bfc335d725bb2c69dea4c0b5769e38",
+      "name": "Kamikaze",
+      "teamname": "Astro Labs",
+      "weightclass": "beetleweight",
+      "flavortext": "Second weekend in a row of fighting.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "6e605e305b63253fb6099cb208ce74686a7b7908": {
+      "id": "6e605e305b63253fb6099cb208ce74686a7b7908",
+      "name": "SunFlower Super Nova",
+      "teamname": "Team So EXTRA!",
+      "weightclass": "beetleweight",
+      "flavortext": "Something is going to explode!!!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "004af62bd6c58aa05ff8a92ce8d8375bbf2be81f": {
+      "id": "004af62bd6c58aa05ff8a92ce8d8375bbf2be81f",
+      "name": "Pipeline Punch",
+      "teamname": "Late Night Robots",
+      "weightclass": "beetleweight",
+      "flavortext": "4wd Vert",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "c4c219a3a5cfb74abd48d5aa74e569617c040ee8": {
+      "id": "c4c219a3a5cfb74abd48d5aa74e569617c040ee8",
+      "name": "Ataxia",
+      "teamname": "Hazardous Robotics",
+      "weightclass": "beetleweight",
+      "flavortext": "Beetle horizontal bar spinner.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "9fb15f519a0ef53f2f7200d44d72350b3193e1f7": {
+      "id": "9fb15f519a0ef53f2f7200d44d72350b3193e1f7",
+      "name": "Robot C",
+      "teamname": "Team Clear",
+      "weightclass": "antweight",
+      "flavortext": "Robot C is an undercutter that could be described as a cross between a scalar kit and a plastic poison kit. The arena floor knows what it did to deserve this.",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "b499f4df023943cbce0fae3e49e325ed66897f6a": {
+      "id": "b499f4df023943cbce0fae3e49e325ed66897f6a",
+      "name": "Three Amigos",
+      "teamname": "Giddy Bots",
+      "weightclass": "antweight",
+      "flavortext": "Inspired by Three Blind Mice, a team of three 1lb Repeat minibots that compete in Beetles.\nThis is the antweight version, with each one weighing in at 151 grams. With chonky TPU forks, fat urethane wheels and titanium cover plates over the electronics, we anticipate these to be quite robost.\nA single one of them will happily bully a 1lb bot around the arena, so three of them will be a blast!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "28aa3f03330b78978c8ef2c359ca9b79dbf3650a": {
+      "id": "28aa3f03330b78978c8ef2c359ca9b79dbf3650a",
+      "name": "Perry",
+      "teamname": "",
+      "weightclass": "antweight",
+      "flavortext": "",
+      "imagestatus": "error",
+      "record": "",
+      "existsinchallonge": false
+    },
+    "6a14cc241ee5f1e559bc8222bb191aa75fef46e1": {
+      "id": "6a14cc241ee5f1e559bc8222bb191aa75fef46e1",
+      "name": "TestBot",
+      "teamname": "RobotSmashingLeague",
+      "weightclass": "antweight",
+      "flavortext": "Don't look! This bot is a test of the system and ordinarily should not be visible!",
+      "imagestatus": "ok",
+      "record": "",
+      "existsinchallonge": false
+    }
+  }
+}
