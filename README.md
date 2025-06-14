@@ -13,9 +13,13 @@ track of records, probably, at some point, eventually.
 
 Requirements:
 
-- [Python](https://www.python.org/)
 - [OBS](https://obsproject.com/)
 - [OBS URL/API Source Plugin](https://obsproject.com/forum/resources/url-api-source-live-data-media-and-ai-on-obs-made-simple.1756/)
+- [Python](https://www.python.org/)
+
+or
+
+- [PyEnv](https://github.com/pyenv/pyenv) (python version 3.10.6 or greater should work)
 
 to install, clone the repository, create a virtual environment, and install dependencies.
 
@@ -28,8 +32,7 @@ pip install -r requirements.txt
 
 ## Running the program
 
-The server can be started by running the command `uvicorn main:app --port 80 --host "0.0.0.0"` from the root directory of the repo with the
-virtual environment active. This will start a webserver running on the local machine and accessible to anyone on your local network.
+run the `run.ps1` script from your command line or by double clicking on it in windows explorer, this will run the necessary commands to launch the app and open a browser
 
 ## Using the program
 
