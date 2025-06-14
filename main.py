@@ -17,10 +17,8 @@ ch_cache_data = {}
 
 robots = load_persisted()
 
-queue: dict[Color, dict[QueuePosition, dict[Field, str]]] = {
-    Color.red: {pos: EMPTY_ROBOT for pos in QueuePosition},
-    Color.blue: {pos: EMPTY_ROBOT for pos in QueuePosition},
-}
+# Queues for each tournament, keyed by tournament id
+# (Initialization moved after active_tournaments is defined)
 
 app = FastAPI(
     redoc_url="/redoc",
@@ -67,12 +65,15 @@ def challonge_cache(data_type: ChDataType | None = None):
     Returns:
         The requested Challonge data.
     """
-    global ch_cache_last_updated, ch_cache_data
+    global ch_cache_last_updated, ch_cache_data, active_tournaments
     # if challonge hasn't been updated in the past 30sec, update cached data
     if datetime.datetime.now() - ch_cache_last_updated > datetime.timedelta(seconds=30):
         tournaments = challonge.tournaments.index()
-        matches = challonge.matches.index(active_tournament["id"])
-        participants = challonge.participants.index(active_tournament["id"])
+        matches = []
+        participants = []
+        for t in active_tournaments:
+            matches.extend(challonge.matches.index(t["id"]))
+            participants.extend(challonge.participants.index(t["id"]))
         ch_cache_data[ChDataType.tournaments] = tournaments
         ch_cache_data[ChDataType.matches] = matches
         ch_cache_data[ChDataType.participants] = participants
@@ -99,24 +100,123 @@ def challonge_cache(data_type: ChDataType | None = None):
 # credentials loaded from sensitivedata.py
 challonge.set_credentials(get_challonge_username(), get_challonge_api_key())
 tournaments = challonge.tournaments.index()  # list tournaments to begin
-# start with the first tournament in account as the selected tournament
-active_tournament = tournaments[0]
+# start with the first tournament in account as the selected tournaments
+active_tournaments = [tournaments[0]]
+
+# Queues for each tournament, keyed by tournament id
+queues: dict[str, dict[Color, dict[QueuePosition, dict[Field, str]]]] = {}
+for t in active_tournaments:
+    queues[str(t["id"])] = {
+        Color.red: {pos: EMPTY_ROBOT for pos in QueuePosition},
+        Color.blue: {pos: EMPTY_ROBOT for pos in QueuePosition},
+    }
+
+app = FastAPI(
+    redoc_url="/redoc",
+    openapi_tags=TAGS_META,
+    swagger_ui_parameters={"deepLinking": False},
+)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+print("Current IP address:", get_ip())
+
+app.title = "ArenaCommand"
+app.version = "1.7.0"
+app.summary = "BattleBots Control software"
+
+
+def custom_openapi():
+    """
+    Customizes the OpenAPI schema for the FastAPI app, including logo and metadata.
+    Returns the cached schema if already generated.
+    """
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = get_openapi(
+        title=app.title,
+        version=app.version,
+        summary=app.summary,
+        description=app.description,
+        routes=app.routes,
+        tags=app.openapi_tags,
+    )
+    openapi_schema["info"]["x-logo"] = {"url": "/banner_inverse.png"}
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+
+app.openapi = custom_openapi
+
+
+def challonge_cache(data_type: ChDataType | None = None):
+    """
+    Caches and returns Challonge tournament data (tournaments, matches, participants).
+    Updates cache if more than 30 seconds have passed since last update.
+    Args:
+        data_type (ChDataType | None): The type of data to return from the cache.
+    Returns:
+        The requested Challonge data.
+    """
+    global ch_cache_last_updated, ch_cache_data, active_tournaments
+    # if challonge hasn't been updated in the past 30sec, update cached data
+    if datetime.datetime.now() - ch_cache_last_updated > datetime.timedelta(seconds=30):
+        tournaments = challonge.tournaments.index()
+        matches = []
+        participants = []
+        for t in active_tournaments:
+            matches.extend(challonge.matches.index(t["id"]))
+            participants.extend(challonge.participants.index(t["id"]))
+        ch_cache_data[ChDataType.tournaments] = tournaments
+        ch_cache_data[ChDataType.matches] = matches
+        ch_cache_data[ChDataType.participants] = participants
+        print(
+            "Challonge cache updated! Last update",
+            datetime.datetime.now() - ch_cache_last_updated,
+            "ago.",
+        )
+        ch_cache_last_updated = datetime.datetime.now()
+    else:  # use cached data
+        tournaments = ch_cache_data[ChDataType.tournaments]
+        matches = ch_cache_data[ChDataType.matches]
+        participants = ch_cache_data[ChDataType.participants]
+
+    # return data based on selector
+    if data_type == ChDataType.tournaments:
+        return tournaments
+    if data_type == ChDataType.matches:
+        return matches
+    if data_type == ChDataType.participants:
+        return participants
+
+
+# credentials loaded from sensitivedata.py
+challonge.set_credentials(get_challonge_username(), get_challonge_api_key())
+tournaments = challonge.tournaments.index()  # list tournaments to begin
+# start with the first tournament in account as the selected tournaments
+active_tournaments = [tournaments[0]]
 
 
 def get_robot_record_id(id: str):
-    """Returns a W-L-T record loaded from Challonge based on the robot's name and the currently selected tournament.
+    """Returns a W-L record loaded from Challonge based on the robot's name and all currently selected tournaments.
     Args:
         id (str): The internal robot ID.
     Returns:
-        str: The win-loss-tie record as a string, or an empty string if not found.
+        str: The win-loss record as a string, or an empty string if not found.
     """
     c_parts = challonge_cache(ChDataType.participants)
     c_matcs = challonge_cache(ChDataType.matches)
 
-    participants = {  # pare down challonge data and add w/l/t slots for keeping track
-        p["id"]: {"id": p["id"], "name": p["name"], "wins": 0, "losses": 0, "ties": 0}
-        for p in c_parts
-    }
+    # Aggregate participants and matches by robot name across all tournaments
+    participants = {}
+    for p in c_parts:
+        if p["id"] not in participants:
+            participants[p["id"]] = {
+                "id": p["id"],
+                "name": p["name"],
+                "wins": 0,
+                "losses": 0,
+                # 'ties' is tracked but not used in output
+                "ties": 0,
+            }
     matches = [
         {
             "id": m["id"],
@@ -129,12 +229,10 @@ def get_robot_record_id(id: str):
         for m in c_matcs
     ]
 
-    # print(participants, matches)
-
     for m in matches:
-        if m["state"] != "complete":  # make sure match completed
+        if m["state"] != "complete":
             continue
-        if m["winner_id"] != None and m["loser_id"] != None:
+        if m["winner_id"] is not None and m["loser_id"] is not None:
             participants[m["winner_id"]]["wins"] += 1
             participants[m["loser_id"]]["losses"] += 1
         else:
@@ -144,28 +242,18 @@ def get_robot_record_id(id: str):
     if id in [robot[1][Field.id] for robot in robots.items()]:
         current_name = robots[id][Field.name]
     else:
-        return ""  # will return if id does not resolve to a robot, such as for a grudge match
+        return ""
 
-    text = (
-        ""  # will return if robot name does not exist in selected challonge tournament
-    )
-    for id in participants.keys():
-        p = participants[id]
-        # print(p)
+    text = ""
+    for pid in participants.keys():
+        p = participants[pid]
         if current_name == p["name"]:
-            text = "-".join([str(p["wins"]), str(p["losses"]), str(p["ties"])])
+            text = "-".join([str(p["wins"]), str(p["losses"])]);  # Only W-L
     return text
 
-
 def robot_exists_in_cur_ch_tournament(id: str) -> bool:
-    """Returns True if the current internal robot ID exists in the Challonge tournament, otherwise False.
-    Args:
-        id (str): The internal robot ID.
-    Returns:
-        bool: True if robot exists in tournament, False otherwise.
-    """
+    """Returns True if the current internal robot ID exists in any of the selected Challonge tournaments, otherwise False."""
     c_parts = challonge_cache(ChDataType.participants)
-    # pare down challonge data to just names
     p_names = [p["name"] for p in c_parts]
     if id in [robot[1][Field.id] for robot in robots.items()]:
         current_name = robots[id][Field.name]
@@ -225,32 +313,27 @@ def html_page(webpage: WebPage) -> HTMLResponse:
         )
 
 
-@app.get("/api/v1/active/{queue_pos}/{color}/image", tags=["activerobot"])
+@app.get("/api/v1/active/{tournament_id}/{queue_pos}/{color}/image", tags=["activerobot"])
 def get_robot_image_json(
-    color: Color,
-    queue_pos: QueuePosition,
-    transform: ImageTransform | None = None,
-    max_size: int | None = None,
+    tournament_id: str, color: Color, queue_pos: QueuePosition, transform: ImageTransform | None = None, max_size: int | None = None
 ) -> JSONResponse:
-    """returns the stored image url for selected robot"""
-    id = queue[color][queue_pos][Field.id]
+    """returns the stored image url for selected robot in a specific tournament queue"""
+    id = queues[tournament_id][color][queue_pos][Field.id]
     return {"field": "imageurl", "text": f"http://{get_ip()}/api/v1/images/get/{id}"}
 
 
-@app.get("/api/v1/active/{queue_pos}/{color}/record", tags=["activerobot"])
-def get_robot_record_json(queue_pos: QueuePosition, color: Color) -> JSONResponse:
-    """returns the record (W-L-T) of the selected robot"""
-    id = queue[color][queue_pos][Field.id]
+@app.get("/api/v1/active/{tournament_id}/{queue_pos}/{color}/record", tags=["activerobot"])
+def get_robot_record_json(tournament_id: str, queue_pos: QueuePosition, color: Color) -> JSONResponse:
+    """ returns the record (W-L-T) of the selected robot in a specific tournament queue"""
+    id = queues[tournament_id][color][queue_pos][Field.id]
     text = get_robot_record_id(id)
     return {"field": Field.record, "text": text, "format": "W-L-T"}
 
 
-@app.get("/api/v1/active/{queue_pos}/{color}/{field}", tags=["activerobot"])
-def get_robot_field_json(
-    color: Color, field: Field, queue_pos: QueuePosition
-) -> JSONResponse:
-    """get other field of the current robot"""
-    return {"field": field, "text": queue[color][queue_pos][field]}
+@app.get("/api/v1/active/{tournament_id}/{queue_pos}/{color}/{field}", tags=["activerobot"])
+def get_robot_field_json(tournament_id: str, color: Color, field: Field, queue_pos: QueuePosition) -> JSONResponse:
+    """get other field of the current robot in a specific tournament queue"""
+    return {"field": field, "text": queues[tournament_id][color][queue_pos][field]}
 
 
 @app.get(
@@ -293,63 +376,63 @@ async def get_robot_list(
     return sort_robots_by_field(returnable, sort, reverse)
 
 
-@app.post("/api/v1/queue/advance", tags=["utilities"])
-def advance_standby_robot():
-    """advance robots in queue"""
-    global queue
+@app.post("/api/v1/queue/advance/{tournament_id}", tags=["utilities"])
+def advance_standby_robot(tournament_id: str):
+    """advance robots in queue for a specific tournament"""
+    global queues
     for color in Color:
-        queue[color][QueuePosition.current] = queue[color][QueuePosition.next]
-        queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
-        queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
-        queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
-        queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
-        queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
-        queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
-        queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+        queues[tournament_id][color][QueuePosition.current] = queues[tournament_id][color][QueuePosition.next]
+        queues[tournament_id][color][QueuePosition.next] = queues[tournament_id][color][QueuePosition.standby]
+        queues[tournament_id][color][QueuePosition.standby] = queues[tournament_id][color][QueuePosition.extra1]
+        queues[tournament_id][color][QueuePosition.extra1] = queues[tournament_id][color][QueuePosition.extra2]
+        queues[tournament_id][color][QueuePosition.extra2] = queues[tournament_id][color][QueuePosition.extra3]
+        queues[tournament_id][color][QueuePosition.extra3] = queues[tournament_id][color][QueuePosition.extra4]
+        queues[tournament_id][color][QueuePosition.extra4] = queues[tournament_id][color][QueuePosition.extra5]
+        queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
 
 
-@app.post("/api/v1/queue/remove/{queue_pos}", tags=["utilities"])
-def remove_from_queue(queue_pos: QueuePosition):
-    """Remove a match from the queue and shift remaining matches up"""
-    global queue
+@app.post("/api/v1/queue/remove/{tournament_id}/{queue_pos}", tags=["utilities"])
+def remove_from_queue(tournament_id: str, queue_pos: QueuePosition):
+    """Remove a match from the queue and shift remaining matches up for a specific tournament"""
+    global queues
     for color in Color:
         if queue_pos == QueuePosition.current:
             return
         elif queue_pos == QueuePosition.next:
-            queue[color][QueuePosition.next] = queue[color][QueuePosition.standby]
-            queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
-            queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
-            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
-            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
-            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
-            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+            queues[tournament_id][color][QueuePosition.next] = queues[tournament_id][color][QueuePosition.standby]
+            queues[tournament_id][color][QueuePosition.standby] = queues[tournament_id][color][QueuePosition.extra1]
+            queues[tournament_id][color][QueuePosition.extra1] = queues[tournament_id][color][QueuePosition.extra2]
+            queues[tournament_id][color][QueuePosition.extra2] = queues[tournament_id][color][QueuePosition.extra3]
+            queues[tournament_id][color][QueuePosition.extra3] = queues[tournament_id][color][QueuePosition.extra4]
+            queues[tournament_id][color][QueuePosition.extra4] = queues[tournament_id][color][QueuePosition.extra5]
+            queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.standby:
-            queue[color][QueuePosition.standby] = queue[color][QueuePosition.extra1]
-            queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
-            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
-            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
-            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
-            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+            queues[tournament_id][color][QueuePosition.standby] = queues[tournament_id][color][QueuePosition.extra1]
+            queues[tournament_id][color][QueuePosition.extra1] = queues[tournament_id][color][QueuePosition.extra2]
+            queues[tournament_id][color][QueuePosition.extra2] = queues[tournament_id][color][QueuePosition.extra3]
+            queues[tournament_id][color][QueuePosition.extra3] = queues[tournament_id][color][QueuePosition.extra4]
+            queues[tournament_id][color][QueuePosition.extra4] = queues[tournament_id][color][QueuePosition.extra5]
+            queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.extra1:
-            queue[color][QueuePosition.extra1] = queue[color][QueuePosition.extra2]
-            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
-            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
-            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
-            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+            queues[tournament_id][color][QueuePosition.extra1] = queues[tournament_id][color][QueuePosition.extra2]
+            queues[tournament_id][color][QueuePosition.extra2] = queues[tournament_id][color][QueuePosition.extra3]
+            queues[tournament_id][color][QueuePosition.extra3] = queues[tournament_id][color][QueuePosition.extra4]
+            queues[tournament_id][color][QueuePosition.extra4] = queues[tournament_id][color][QueuePosition.extra5]
+            queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.extra2:
-            queue[color][QueuePosition.extra2] = queue[color][QueuePosition.extra3]
-            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
-            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
-            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+            queues[tournament_id][color][QueuePosition.extra2] = queues[tournament_id][color][QueuePosition.extra3]
+            queues[tournament_id][color][QueuePosition.extra3] = queues[tournament_id][color][QueuePosition.extra4]
+            queues[tournament_id][color][QueuePosition.extra4] = queues[tournament_id][color][QueuePosition.extra5]
+            queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.extra3:
-            queue[color][QueuePosition.extra3] = queue[color][QueuePosition.extra4]
-            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
-            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+            queues[tournament_id][color][QueuePosition.extra3] = queues[tournament_id][color][QueuePosition.extra4]
+            queues[tournament_id][color][QueuePosition.extra4] = queues[tournament_id][color][QueuePosition.extra5]
+            queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.extra4:
-            queue[color][QueuePosition.extra4] = queue[color][QueuePosition.extra5]
-            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+            queues[tournament_id][color][QueuePosition.extra4] = queues[tournament_id][color][QueuePosition.extra5]
+            queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
         elif queue_pos == QueuePosition.extra5:
-            queue[color][QueuePosition.extra5] = EMPTY_ROBOT
+            queues[tournament_id][color][QueuePosition.extra5] = EMPTY_ROBOT
 
 
 @app.post("/api/v1/set/{queue_pos}/{color}", tags=["activerobot"])
@@ -561,39 +644,60 @@ async def get_tournaments():
 
 
 @app.post("/api/v1/tournaments/active", tags=["tournaments"])
-async def set_active_tournament(request: Request):
+async def set_active_tournaments(request: Request):
     """
-    Asynchronously sets the active tournament based on the provided tournament ID in the request JSON.
+    Asynchronously sets the active tournaments based on a list of tournament IDs in the request JSON.
     Args:
-        request (Request): The FastAPI request containing the tournament ID.
+        request (Request): The FastAPI request containing the tournament IDs.
     """
-    global active_tournament, ch_cache_last_updated
-    # force cache update because new tournament
+    global active_tournaments, ch_cache_last_updated
     json = await request.json()
+    ids = json["ids"] if "ids" in json else [json["id"]]
     tournaments = challonge_cache(ChDataType.tournaments)
-    for t in tournaments:
-        if int(json["id"]) == int(t["id"]):
-            active_tournament = t
+    active_tournaments = [t for t in tournaments if int(t["id"]) in [int(i) for i in ids]]
     ch_cache_last_updated = datetime.datetime(1970, 1, 1)
 
 
+@app.post("/api/v1/tournaments/active", tags=["tournaments"])
+def set_active_tournaments_endpoint(request: Request):
+    """
+    Endpoint for setting multiple active tournaments.
+    """
+    return set_active_tournaments(request)
+
+
 @app.get("/api/v1/tournaments/active", tags=["tournaments"])
-def get_active_tournament():
-    return active_tournament
+def get_active_tournaments():
+    """
+    Returns the list of currently active tournaments.
+    """
+    return active_tournaments
 
 
 @app.get("/api/v1/tournaments/active/participants", tags=["tournaments"])
-def get_active_tournament_pariticipants():
-    global active_tournament
-    participants = challonge_cache(ChDataType.participants)
-    return participants
+def get_active_tournaments_participants():
+    """
+    Returns participants for all active tournaments.
+    """
+    global active_tournaments
+    all_participants = []
+    for t in active_tournaments:
+        participants = challonge.participants.index(t["id"])
+        all_participants.extend(participants)
+    return all_participants
 
 
 @app.get("/api/v1/tournaments/active/matches", tags=["tournaments"])
-def get_active_tournament_matches():
-    global active_tournament
-    matches = challonge_cache(ChDataType.matches)
-    return matches
+def get_active_tournaments_matches():
+    """
+    Returns matches for all active tournaments.
+    """
+    global active_tournaments
+    all_matches = []
+    for t in active_tournaments:
+        matches = challonge.matches.index(t["id"])
+        all_matches.extend(matches)
+    return all_matches
 
 
 app.mount("/", StaticFiles(directory="./icons", check_dir=True), name="icons")
